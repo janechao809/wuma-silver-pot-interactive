@@ -467,23 +467,14 @@
       z-index: 2;
       width: 100%;
       height: 100%;
-      display: none;
+      display: block;
       border-radius: 12px;
     }
 
     .artifact-reference {
-      position: absolute;
-      left: 50%;
-      bottom: 58px;
-      z-index: 3;
-      width: min(68%, 360px);
-      opacity: 1;
-      transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(var(--pot-rotate-y)) scale(var(--pot-scale));
-      transform-origin: 50% 86%;
-      filter: drop-shadow(0 28px 28px rgba(7, 59, 50, .22)) saturate(1.05) contrast(1.03);
-      transition: transform .42s cubic-bezier(.16, 1, .3, 1), filter .42s ease;
+      opacity: 0;
       pointer-events: none;
-      animation: observePotSway 6s ease-in-out infinite;
+      visibility: hidden;
     }
 
     .artifact-wrap.model-mode.is-interacting .artifact-reference,
@@ -516,7 +507,7 @@
       position: absolute;
       right: 18px;
       top: 18px;
-      z-index: 8;
+      z-index: 35;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -565,7 +556,7 @@
 
     .hotspot {
       position: absolute;
-      z-index: 6;
+      z-index: 25;
       width: 30px;
       height: 30px;
       border: 0;
@@ -2705,7 +2696,7 @@
       }
     }
   </script>
-  <script>
+  <script type="application/json" id="legacy-observe-disabled">
     const observeStage = document.querySelector("#artifactCanvas");
     const observeWrap = document.querySelector(".artifact-wrap.model-mode");
     const observeImage = document.querySelector(".artifact-reference");
@@ -2841,6 +2832,215 @@
     window.addEventListener("resize", renderHotspots);
     window.visualViewport?.addEventListener("resize", renderHotspots);
     animateObservePot();
+  </script>
+  <script type="module">
+    import * as THREE from "./assets/vendor/three.module.min.js";
+    import { OrbitControls } from "./assets/vendor/OrbitControls.js";
+    import { GLTFLoader } from "./assets/vendor/GLTFLoader.js";
+
+    const canvas3d = document.querySelector("#artifact3d");
+    const stage3d = document.querySelector("#artifactCanvas");
+    const wrap3d = document.querySelector(".artifact-wrap.model-mode");
+    const renderer3d = new THREE.WebGLRenderer({
+      canvas: canvas3d,
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer3d.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer3d.outputColorSpace = THREE.SRGBColorSpace;
+    renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer3d.toneMappingExposure = 1.12;
+
+    const scene3d = new THREE.Scene();
+    const camera3d = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+    camera3d.position.set(0, 0.18, 6.2);
+
+    const controls3d = new OrbitControls(camera3d, renderer3d.domElement);
+    controls3d.enableDamping = true;
+    controls3d.dampingFactor = 0.08;
+    controls3d.enablePan = false;
+    controls3d.enableZoom = true;
+    controls3d.rotateSpeed = 0.86;
+    controls3d.zoomSpeed = 0.72;
+    controls3d.minDistance = 3.45;
+    controls3d.maxDistance = 8.5;
+    controls3d.autoRotate = false;
+    controls3d.autoRotateSpeed = 1.05;
+
+    const model3d = new THREE.Group();
+    scene3d.add(model3d);
+
+    scene3d.add(new THREE.HemisphereLight(0xfff6de, 0x24443c, 2.45));
+    const keyLight3d = new THREE.DirectionalLight(0xfff0c8, 3.7);
+    keyLight3d.position.set(3.8, 4.8, 5.4);
+    scene3d.add(keyLight3d);
+    const fillLight3d = new THREE.DirectionalLight(0xb5fff0, 1.25);
+    fillLight3d.position.set(-4.5, 2.4, 2.2);
+    scene3d.add(fillLight3d);
+    const rimLight3d = new THREE.DirectionalLight(0xffffff, 1.2);
+    rimLight3d.position.set(-2.2, 3.2, -4.8);
+    scene3d.add(rimLight3d);
+
+    const floor3d = new THREE.Mesh(
+      new THREE.CircleGeometry(1.82, 96),
+      new THREE.MeshBasicMaterial({ color: 0x073b32, transparent: true, opacity: .1 })
+    );
+    floor3d.rotation.x = -Math.PI / 2;
+    floor3d.position.y = -1.62;
+    scene3d.add(floor3d);
+
+    const hotspotWorldAnchors = {
+      handle: new THREE.Vector3(0, 1.34, .38),
+      lid: new THREE.Vector3(.82, .74, .42),
+      chain: new THREE.Vector3(.86, .15, .48),
+      shape: new THREE.Vector3(-.72, -.32, .5),
+      horse: new THREE.Vector3(.05, -.36, .58),
+      craft: new THREE.Vector3(.2, -1.34, .42)
+    };
+    const projected3d = new THREE.Vector3();
+    let loadedRoot3d = null;
+    let modelBox3d = new THREE.Box3();
+    let modelSize3d = new THREE.Vector3(1, 1, 1);
+    let modelCenter3d = new THREE.Vector3();
+
+    function clamp3d(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function enhanceMaterials3d(root) {
+      root.traverse((node) => {
+        if (!node.isMesh || !node.material) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        materials.forEach((mat) => {
+          if ("metalness" in mat) mat.metalness = Math.max(mat.metalness ?? 0, 0.72);
+          if ("roughness" in mat) mat.roughness = clamp3d(mat.roughness ?? .48, .24, .58);
+          if ("envMapIntensity" in mat) mat.envMapIntensity = Math.max(mat.envMapIntensity ?? 1, 1.25);
+          mat.needsUpdate = true;
+        });
+      });
+    }
+
+    function fitModel3d(root) {
+      model3d.clear();
+      const box = new THREE.Box3().setFromObject(root);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+      root.position.sub(center);
+      root.scale.multiplyScalar(3.05 / maxAxis);
+      root.rotation.y = Math.PI;
+      model3d.add(root);
+      loadedRoot3d = root;
+
+      modelBox3d = new THREE.Box3().setFromObject(model3d);
+      modelSize3d = modelBox3d.getSize(new THREE.Vector3());
+      modelCenter3d = modelBox3d.getCenter(new THREE.Vector3());
+      controls3d.target.copy(modelCenter3d);
+      controls3d.target.y += .04;
+      controls3d.update();
+      stage3d?.classList.add("hunyuan-loaded");
+      updateHotspots3d();
+      window.showToast?.("混元3D模型已加载，可自由拖拽观察。");
+    }
+
+    function loadModel3d() {
+      const loader = new GLTFLoader();
+      loader.load(
+        "./assets/wuma-hunyuan-model.glb",
+        (gltf) => {
+          enhanceMaterials3d(gltf.scene);
+          fitModel3d(gltf.scene);
+        },
+        undefined,
+        (error) => {
+          console.warn("Hunyuan model failed to load.", error);
+          window.showToast?.("混元3D模型加载失败，请检查模型文件。");
+        }
+      );
+    }
+
+    function anchorToWorld3d(anchor) {
+      return new THREE.Vector3(
+        modelCenter3d.x + anchor.x * modelSize3d.x * .5,
+        modelCenter3d.y + anchor.y * modelSize3d.y * .5,
+        modelCenter3d.z + anchor.z * modelSize3d.z * .5
+      );
+    }
+
+    function updateHotspots3d() {
+      if (!loadedRoot3d || !wrap3d) return;
+      const wrapRect = wrap3d.getBoundingClientRect();
+      document.querySelectorAll(".hotspot").forEach((button) => {
+        const anchor = hotspotWorldAnchors[button.dataset.id];
+        if (!anchor) return;
+        projected3d.copy(anchorToWorld3d(anchor)).project(camera3d);
+        button.style.left = `${(projected3d.x * .5 + .5) * wrapRect.width}px`;
+        button.style.top = `${(-projected3d.y * .5 + .5) * wrapRect.height}px`;
+        button.style.opacity = "1";
+      });
+    }
+
+    function resize3d() {
+      const rect = wrap3d.getBoundingClientRect();
+      const width = Math.max(320, rect.width);
+      const height = Math.max(320, rect.height);
+      renderer3d.setSize(width, height, false);
+      camera3d.aspect = width / height;
+      camera3d.updateProjectionMatrix();
+      updateHotspots3d();
+    }
+
+    function setView3d(view) {
+      if (view === "spin") {
+        controls3d.autoRotate = !controls3d.autoRotate;
+        window.showToast?.(controls3d.autoRotate ? "自动旋转已开启。" : "自动旋转已暂停。");
+        return;
+      }
+      controls3d.autoRotate = false;
+      const distance = clamp3d(camera3d.position.distanceTo(controls3d.target), 4.2, 7.4);
+      const positions = {
+        front: [0, .12, distance],
+        side: [distance, .15, .15],
+        top: [0, distance, .36]
+      };
+      if (positions[view]) {
+        camera3d.position.set(...positions[view]);
+        controls3d.update();
+        updateHotspots3d();
+        window.showToast?.("视角已切换，可继续拖拽观察。");
+      }
+    }
+
+    document.querySelectorAll("[data-view]").forEach(button => {
+      button.addEventListener("click", () => setView3d(button.dataset.view));
+    });
+
+    document.querySelectorAll(".hotspot").forEach(button => {
+      button.addEventListener("pointerdown", event => event.stopPropagation());
+      button.addEventListener("click", event => event.stopPropagation());
+    });
+
+    renderer3d.domElement.addEventListener("pointerdown", () => {
+      controls3d.autoRotate = false;
+    });
+    controls3d.addEventListener("change", updateHotspots3d);
+    window.addEventListener("resize", resize3d);
+    window.visualViewport?.addEventListener("resize", resize3d);
+
+    loadModel3d();
+    resize3d();
+
+    function animate3d() {
+      controls3d.update();
+      renderer3d.render(scene3d, camera3d);
+      updateHotspots3d();
+      requestAnimationFrame(animate3d);
+    }
+
+    animate3d();
   </script>
 </body>
 </html>
