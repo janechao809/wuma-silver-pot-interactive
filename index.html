@@ -474,9 +474,9 @@
     .artifact-reference {
       position: absolute;
       left: 50%;
-      bottom: 48px;
+      bottom: 58px;
       z-index: 3;
-      width: min(74%, 390px);
+      width: min(68%, 360px);
       opacity: 1;
       transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(var(--pot-rotate-y)) scale(var(--pot-scale));
       transform-origin: 50% 86%;
@@ -541,7 +541,7 @@
       background: #fffaf0;
     }
 
-    .artifact-wrap img {
+    .artifact-wrap:not(.model-mode) img {
       position: relative;
       z-index: 2;
       width: 100%;
@@ -566,13 +566,28 @@
     .hotspot {
       position: absolute;
       z-index: 6;
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       border: 0;
       border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 0 8px rgba(215, 160, 56, .18), 0 0 0 16px rgba(215, 160, 56, .08);
-      transition: transform .2s ease, background .2s ease;
+      background: linear-gradient(145deg, #f4c850 0%, #d79f22 76%);
+      outline: 3px solid rgba(255, 250, 240, .96);
+      box-shadow: 0 8px 18px rgba(91, 62, 10, .24), 0 0 0 8px rgba(215, 160, 56, .2);
+      cursor: pointer;
+      touch-action: manipulation;
+      pointer-events: auto;
+      transform: translate(-50%, -50%);
+      transition: transform .2s ease, background .2s ease, opacity .2s ease, left .22s ease, top .22s ease;
+    }
+
+    .hotspot::before {
+      content: "";
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2px solid rgba(215, 160, 56, .28);
+      animation: hotspotPulse 1.8s ease-in-out infinite;
+      pointer-events: none;
     }
 
     .hotspot::after {
@@ -594,7 +609,7 @@
 
     .hotspot:hover,
     .hotspot.active {
-      transform: scale(1.18);
+      transform: translate(-50%, -50%) scale(1.18);
       background: var(--jade-2);
     }
 
@@ -606,7 +621,7 @@
 
     .hotspot.seen {
       background: var(--jade-2);
-      box-shadow: 0 0 0 8px rgba(24, 169, 129, .18), 0 0 0 16px rgba(24, 169, 129, .08);
+      box-shadow: 0 8px 18px rgba(7, 59, 50, .2), 0 0 0 8px rgba(24, 169, 129, .18);
     }
 
     .hs-handle { left: 46%; top: 18%; }
@@ -1803,6 +1818,17 @@
       }
     }
 
+    @keyframes hotspotPulse {
+      0%, 100% {
+        opacity: .55;
+        transform: scale(.9);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.18);
+      }
+    }
+
     @keyframes horseDance {
       0%, 100% { transform: translateX(0) translateY(0) rotate(-4deg) scale(1); }
       30% { transform: translateX(36px) translateY(-14px) rotate(5deg) scale(1.08); }
@@ -2527,7 +2553,11 @@
     }
 
     document.querySelectorAll(".hotspot").forEach(btn => {
-      btn.addEventListener("click", () => setFact(btn.dataset.id));
+      btn.addEventListener("pointerdown", event => event.stopPropagation());
+      btn.addEventListener("click", event => {
+        event.stopPropagation();
+        setFact(btn.dataset.id);
+      });
     });
 
     document.querySelectorAll("[data-scroll]").forEach(btn => {
@@ -2679,6 +2709,14 @@
     const observeStage = document.querySelector("#artifactCanvas");
     const observeWrap = document.querySelector(".artifact-wrap.model-mode");
     const observeImage = document.querySelector(".artifact-reference");
+    const hotspotAnchors = {
+      handle: { x: .49, y: .15, depth: -.18 },
+      lid: { x: .78, y: .24, depth: .22 },
+      chain: { x: .80, y: .39, depth: .25 },
+      shape: { x: .24, y: .62, depth: -.2 },
+      horse: { x: .56, y: .62, depth: .08 },
+      craft: { x: .60, y: .88, depth: .04 }
+    };
     let observeRotateY = 0;
     let observeRotateX = 0;
     let observeScale = 1;
@@ -2696,6 +2734,23 @@
       observeWrap.style.setProperty("--pot-rotate-y", `${observeRotateY}deg`);
       observeWrap.style.setProperty("--pot-rotate-x", `${observeRotateX}deg`);
       observeWrap.style.setProperty("--pot-scale", observeScale.toFixed(3));
+      renderHotspots();
+    }
+
+    function renderHotspots() {
+      if (!observeWrap || !observeImage) return;
+      const imageRect = observeImage.getBoundingClientRect();
+      const wrapRect = observeWrap.getBoundingClientRect();
+      if (!imageRect.width || !imageRect.height) return;
+
+      document.querySelectorAll(".hotspot").forEach(button => {
+        const anchor = hotspotAnchors[button.dataset.id];
+        if (!anchor) return;
+        const depthShift = observeRotateY * (anchor.depth || 0);
+        const tiltShift = observeRotateX * (anchor.y - .5) * .32;
+        button.style.left = `${imageRect.left - wrapRect.left + imageRect.width * anchor.x + depthShift}px`;
+        button.style.top = `${imageRect.top - wrapRect.top + imageRect.height * anchor.y + tiltShift}px`;
+      });
     }
 
     function stopObserveAutoSpin() {
@@ -2733,6 +2788,7 @@
     });
 
     observeStage?.addEventListener("pointerdown", event => {
+      if (event.target.closest?.(".hotspot, .view-controls, #lensToggle")) return;
       stopObserveAutoSpin();
       observeDragging = true;
       observeLastX = event.clientX;
@@ -2781,6 +2837,9 @@
     }
 
     renderObservePot();
+    observeImage?.addEventListener("load", renderHotspots);
+    window.addEventListener("resize", renderHotspots);
+    window.visualViewport?.addEventListener("resize", renderHotspots);
     animateObservePot();
   </script>
 </body>
