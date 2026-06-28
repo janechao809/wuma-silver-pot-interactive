@@ -456,6 +456,9 @@
       width: min(92%, 660px);
       aspect-ratio: 1 / 1;
       animation: none;
+      --pot-rotate-y: 0deg;
+      --pot-rotate-x: 0deg;
+      --pot-scale: 1;
     }
 
     #artifact3d {
@@ -464,12 +467,28 @@
       z-index: 2;
       width: 100%;
       height: 100%;
-      display: block;
+      display: none;
       border-radius: 12px;
     }
 
     .artifact-reference {
-      opacity: 0;
+      position: absolute;
+      left: 50%;
+      bottom: 48px;
+      z-index: 3;
+      width: min(74%, 390px);
+      opacity: 1;
+      transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(var(--pot-rotate-y)) scale(var(--pot-scale));
+      transform-origin: 50% 86%;
+      filter: drop-shadow(0 28px 28px rgba(7, 59, 50, .22)) saturate(1.05) contrast(1.03);
+      transition: transform .42s cubic-bezier(.16, 1, .3, 1), filter .42s ease;
+      pointer-events: none;
+      animation: observePotSway 6s ease-in-out infinite;
+    }
+
+    .artifact-wrap.model-mode.is-interacting .artifact-reference,
+    .artifact-wrap.model-mode.is-fixed-view .artifact-reference {
+      animation: none;
     }
 
     .model-hint {
@@ -1775,6 +1794,15 @@
       50% { transform: translateX(-50%) rotate(2.4deg) scale(1.025); }
     }
 
+    @keyframes observePotSway {
+      0%, 100% {
+        transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(calc(var(--pot-rotate-y) - 3deg)) scale(var(--pot-scale));
+      }
+      50% {
+        transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(calc(var(--pot-rotate-y) + 3deg)) scale(calc(var(--pot-scale) * 1.015));
+      }
+    }
+
     @keyframes horseDance {
       0%, 100% { transform: translateX(0) translateY(0) rotate(-4deg) scale(1); }
       30% { transform: translateX(36px) translateY(-14px) rotate(5deg) scale(1.08); }
@@ -2647,311 +2675,113 @@
       }
     }
   </script>
-  <script type="module">
-    import * as THREE from "./assets/vendor/three.module.min.js";
-    import { OrbitControls } from "./assets/vendor/OrbitControls.js";
-    import { GLTFLoader } from "./assets/vendor/GLTFLoader.js";
+  <script>
+    const observeStage = document.querySelector("#artifactCanvas");
+    const observeWrap = document.querySelector(".artifact-wrap.model-mode");
+    const observeImage = document.querySelector(".artifact-reference");
+    let observeRotateY = 0;
+    let observeRotateX = 0;
+    let observeScale = 1;
+    let observeAutoSpin = false;
+    let observeDragging = false;
+    let observeLastX = 0;
+    let observeLastY = 0;
 
-    const canvas3d = document.querySelector("#artifact3d");
-    const stage = document.querySelector("#artifactCanvas");
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas3d,
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance"
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0.22, 6.2);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.enablePan = false;
-    controls.minDistance = 4.2;
-    controls.maxDistance = 8.2;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.85;
-    controls.target.set(0, 0.05, 0);
-
-    const model = new THREE.Group();
-    scene.add(model);
-
-    scene.add(new THREE.HemisphereLight(0xfff6e0, 0x24443c, 2.1));
-
-    const keyLight = new THREE.DirectionalLight(0xfff1c9, 3.1);
-    keyLight.position.set(3.4, 4.6, 5.2);
-    scene.add(keyLight);
-
-    const rimLight = new THREE.DirectionalLight(0x9ee7d2, 1.4);
-    rimLight.position.set(-4.4, 2.5, -3.4);
-    scene.add(rimLight);
-
-    function makeNoiseTexture() {
-      const size = 256;
-      const c = document.createElement("canvas");
-      c.width = size;
-      c.height = size;
-      const ctx = c.getContext("2d");
-      const img = ctx.createImageData(size, size);
-      for (let i = 0; i < img.data.length; i += 4) {
-        const grain = 120 + Math.random() * 68;
-        img.data[i] = grain;
-        img.data[i + 1] = grain + Math.random() * 8;
-        img.data[i + 2] = grain - Math.random() * 10;
-        img.data[i + 3] = 255;
-      }
-      ctx.putImageData(img, 0, 0);
-      ctx.globalAlpha = .14;
-      for (let y = 0; y < size; y += 11) {
-        ctx.fillStyle = y % 22 === 0 ? "#ffffff" : "#26312e";
-        ctx.fillRect(0, y, size, 1);
-      }
-      const texture = new THREE.CanvasTexture(c);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(1.2, 1.6);
-      return texture;
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
     }
 
-    const silver = new THREE.MeshPhysicalMaterial({
-      color: 0xb9beb7,
-      metalness: 1,
-      roughness: .38,
-      clearcoat: .28,
-      clearcoatRoughness: .34,
-      map: makeNoiseTexture()
-    });
-
-    const darkSilver = new THREE.MeshPhysicalMaterial({
-      color: 0x565b57,
-      metalness: 1,
-      roughness: .48,
-      clearcoat: .18
-    });
-
-    const gold = new THREE.MeshPhysicalMaterial({
-      color: 0xd7a038,
-      metalness: 1,
-      roughness: .25,
-      clearcoat: .45,
-      clearcoatRoughness: .22
-    });
-
-    const shadowGold = new THREE.MeshPhysicalMaterial({
-      color: 0xa56f1e,
-      metalness: .85,
-      roughness: .34
-    });
-
-    function addMesh(geometry, material, position, scale, rotation) {
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(...position);
-      mesh.scale.set(...scale);
-      if (rotation) mesh.rotation.set(...rotation);
-      model.add(mesh);
-      return mesh;
+    function renderObservePot() {
+      if (!observeWrap) return;
+      observeWrap.style.setProperty("--pot-rotate-y", `${observeRotateY}deg`);
+      observeWrap.style.setProperty("--pot-rotate-x", `${observeRotateX}deg`);
+      observeWrap.style.setProperty("--pot-scale", observeScale.toFixed(3));
     }
 
-    function fitLoadedModel(root) {
-      const box = new THREE.Box3().setFromObject(root);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-      root.position.sub(center);
-      root.scale.multiplyScalar(3.45 / maxAxis);
-      root.rotation.y = Math.PI;
-      model.add(root);
-      const fittedBox = new THREE.Box3().setFromObject(root);
-      const fittedCenter = fittedBox.getCenter(new THREE.Vector3());
-      controls.target.copy(fittedCenter);
-      controls.target.y += 0.08;
-      controls.update();
-      stage?.classList.add("hunyuan-loaded");
-      window.showToast?.("混元3D模型已加载，可拖拽旋转观察。");
-    }
-
-    function enhanceLoadedMaterials(root) {
-      root.traverse((node) => {
-        if (!node.isMesh) return;
-        node.castShadow = true;
-        node.receiveShadow = true;
-        if (!node.material) return;
-        const materials = Array.isArray(node.material) ? node.material : [node.material];
-        materials.forEach((mat) => {
-          if ("metalness" in mat) mat.metalness = Math.max(mat.metalness ?? 0, 0.65);
-          if ("roughness" in mat) mat.roughness = Math.min(mat.roughness ?? 0.55, 0.52);
-          mat.needsUpdate = true;
-        });
-      });
-    }
-
-    function loadHunyuanModel() {
-      const loader = new GLTFLoader();
-      loader.load(
-        "./assets/wuma-hunyuan-model.glb",
-        (gltf) => {
-          enhanceLoadedMaterials(gltf.scene);
-          model.clear();
-          fitLoadedModel(gltf.scene);
-        },
-        undefined,
-        (error) => {
-          console.warn("Hunyuan model failed to load; using fallback teaching model.", error);
-          window.showToast?.("混元模型加载失败，已显示备用教学模型。");
-        }
-      );
-    }
-
-    const bodyProfile = [
-      [0.16, -1.52], [0.52, -1.46], [0.92, -1.32], [1.18, -1.02],
-      [1.31, -0.48], [1.23, 0.16], [1.04, 0.58], [0.76, 0.86],
-      [0.52, 1.02], [0.35, 1.08], [0.24, 1.12]
-    ].map(([x, y]) => new THREE.Vector2(x, y));
-
-    const body = addMesh(
-      new THREE.LatheGeometry(bodyProfile, 96),
-      silver,
-      [0, -0.12, 0],
-      [1, 1, .34],
-      [0, 0, 0]
-    );
-
-    addMesh(new THREE.CylinderGeometry(.62, .76, .16, 96), darkSilver, [0, -1.6, 0], [1, 1, .34], [0, 0, 0]);
-    addMesh(new THREE.TorusGeometry(.72, .035, 12, 120), gold, [0, -1.42, .18], [1, .18, .08], [0, 0, 0]);
-
-    for (let i = 0; i < 18; i += 1) {
-      const x = -0.82 + i * .096;
-      addMesh(new THREE.SphereGeometry(.025, 12, 8), shadowGold, [x, -1.42 + Math.sin(i * .9) * .018, .32], [1, 1, 1], [0, 0, 0]);
-    }
-
-    addMesh(new THREE.CylinderGeometry(.23, .28, .36, 48), silver, [.9, .94, 0], [.8, 1, .55], [0, 0, -.16]);
-    addMesh(new THREE.ConeGeometry(.32, .36, 48), gold, [.97, 1.2, 0], [.82, 1, .55], [0, 0, -.16]);
-    addMesh(new THREE.SphereGeometry(.055, 20, 16), gold, [1.03, 1.43, .02], [1, 1, 1], [0, 0, 0]);
-
-    const handleCurve = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(-.86, 1.03, 0),
-      new THREE.Vector3(-.62, 2.33, .03),
-      new THREE.Vector3(.58, 2.33, .03),
-      new THREE.Vector3(.88, 1.04, 0)
-    );
-    addMesh(new THREE.TubeGeometry(handleCurve, 70, .035, 16, false), gold, [0, 0, 0], [1, 1, .65], [0, 0, 0]);
-    addMesh(new THREE.CylinderGeometry(.08, .1, .38, 24), gold, [-.86, .91, 0], [1, 1, .6], [0, 0, 0]);
-    addMesh(new THREE.CylinderGeometry(.08, .1, .38, 24), gold, [.88, .91, 0], [1, 1, .6], [0, 0, 0]);
-
-    const chainStart = new THREE.Vector3(.98, 1.28, .28);
-    const chainEnd = new THREE.Vector3(.48, .24, .34);
-    for (let i = 0; i < 12; i += 1) {
-      const t = i / 11;
-      const pos = chainStart.clone().lerp(chainEnd, t);
-      pos.y += Math.sin(t * Math.PI) * -.18;
-      const ring = addMesh(new THREE.TorusGeometry(.052, .011, 8, 18), darkSilver, [pos.x, pos.y, pos.z], [1, 1, 1], [Math.PI / 2, 0, i % 2 ? .8 : -.8]);
-      ring.material = darkSilver;
-    }
-
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("./assets/horse-decal.png", (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      const decal = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.45, .9),
-        new THREE.MeshBasicMaterial({
-          map: texture,
-          transparent: true,
-          depthWrite: false,
-          side: THREE.DoubleSide
-        })
-      );
-      decal.position.set(.05, -.28, .475);
-      decal.rotation.set(0, 0, -.02);
-      model.add(decal);
-
-      const backDecal = decal.clone();
-      backDecal.position.z = -.475;
-      backDecal.rotation.set(0, Math.PI, .02);
-      model.add(backDecal);
-    });
-
-    const labelCanvas = document.createElement("canvas");
-    labelCanvas.width = 512;
-    labelCanvas.height = 96;
-    const labelCtx = labelCanvas.getContext("2d");
-    labelCtx.fillStyle = "rgba(7,59,50,.72)";
-    labelCtx.fillRect(0, 0, 512, 96);
-    labelCtx.strokeStyle = "rgba(242,207,116,.9)";
-    labelCtx.lineWidth = 5;
-    labelCtx.strokeRect(8, 8, 496, 80);
-    labelCtx.fillStyle = "#fffaf0";
-    labelCtx.font = "700 32px PuHui, Microsoft YaHei";
-    labelCtx.textAlign = "center";
-    labelCtx.fillText("3D教学重构模型", 256, 58);
-    const labelTexture = new THREE.CanvasTexture(labelCanvas);
-    labelTexture.colorSpace = THREE.SRGBColorSpace;
-    const label = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.34, .25),
-      new THREE.MeshBasicMaterial({ map: labelTexture, transparent: true })
-    );
-    label.position.set(0, -1.92, .52);
-    model.add(label);
-
-    loadHunyuanModel();
-
-    const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(1.8, 96),
-      new THREE.MeshBasicMaterial({ color: 0x073b32, transparent: true, opacity: .12 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -1.72;
-    scene.add(floor);
-
-    function resize3d() {
-      const rect = canvas3d.parentElement.getBoundingClientRect();
-      const width = Math.max(320, rect.width);
-      const height = Math.max(320, rect.height);
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+    function stopObserveAutoSpin() {
+      observeAutoSpin = false;
+      observeWrap?.classList.add("is-fixed-view");
     }
 
     function setView(view) {
-      controls.autoRotate = view === "spin" ? !controls.autoRotate : false;
-      const positions = {
-        front: [0, .2, 6.2],
-        side: [5.5, .28, .1],
-        top: [0, 6.4, .5]
-      };
-      if (positions[view]) {
-        camera.position.set(...positions[view]);
-        controls.target.set(0, 0.02, 0);
-        controls.update();
+      observeWrap?.classList.add("is-fixed-view");
+      if (view === "front") {
+        observeRotateY = 0;
+        observeRotateX = 0;
+        observeScale = 1;
+        observeAutoSpin = false;
+      } else if (view === "side") {
+        observeRotateY = 18;
+        observeRotateX = 0;
+        observeScale = .98;
+        observeAutoSpin = false;
+      } else if (view === "top") {
+        observeRotateY = 0;
+        observeRotateX = 10;
+        observeScale = .96;
+        observeAutoSpin = false;
+      } else if (view === "spin") {
+        observeAutoSpin = !observeAutoSpin;
+        observeWrap?.classList.toggle("is-fixed-view", !observeAutoSpin);
       }
-      window.showToast?.(view === "spin" && controls.autoRotate ? "自动旋转已开启。" : view === "spin" ? "自动旋转已暂停。" : "视角已切换，可继续拖拽观察。");
+      renderObservePot();
+      window.showToast?.(view === "spin" && observeAutoSpin ? "自动旋转已开启。" : view === "spin" ? "自动旋转已暂停。" : "视角已切换，可继续拖拽观察。");
     }
 
     document.querySelectorAll("[data-view]").forEach(button => {
       button.addEventListener("click", () => setView(button.dataset.view));
     });
 
-    stage.addEventListener("pointerdown", () => {
-      controls.autoRotate = false;
+    observeStage?.addEventListener("pointerdown", event => {
+      stopObserveAutoSpin();
+      observeDragging = true;
+      observeLastX = event.clientX;
+      observeLastY = event.clientY;
+      observeWrap?.classList.add("is-interacting");
+      observeStage.setPointerCapture?.(event.pointerId);
     });
 
-    window.addEventListener("resize", resize3d);
-    resize3d();
+    observeStage?.addEventListener("pointermove", event => {
+      if (!observeDragging) return;
+      const dx = event.clientX - observeLastX;
+      const dy = event.clientY - observeLastY;
+      observeLastX = event.clientX;
+      observeLastY = event.clientY;
+      observeRotateY = clamp(observeRotateY + dx * .16, -24, 24);
+      observeRotateX = clamp(observeRotateX - dy * .08, -10, 12);
+      renderObservePot();
+    });
 
-    function animate() {
-      controls.update();
-      model.rotation.y += controls.autoRotate ? 0 : 0;
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+    function finishObserveDrag(event) {
+      observeDragging = false;
+      observeWrap?.classList.remove("is-interacting");
+      if (event?.pointerId !== undefined) observeStage?.releasePointerCapture?.(event.pointerId);
     }
 
-    animate();
+    observeStage?.addEventListener("pointerup", finishObserveDrag);
+    observeStage?.addEventListener("pointercancel", finishObserveDrag);
+    observeStage?.addEventListener("pointerleave", () => {
+      if (observeDragging) finishObserveDrag();
+    });
+
+    observeStage?.addEventListener("wheel", event => {
+      event.preventDefault();
+      stopObserveAutoSpin();
+      observeScale = clamp(observeScale + (event.deltaY > 0 ? -.045 : .045), .88, 1.16);
+      renderObservePot();
+    }, { passive: false });
+
+    function animateObservePot() {
+      if (observeAutoSpin && observeImage) {
+        observeRotateY += .18;
+        if (observeRotateY > 24) observeRotateY = -24;
+        renderObservePot();
+      }
+      requestAnimationFrame(animateObservePot);
+    }
+
+    renderObservePot();
+    animateObservePot();
   </script>
 </body>
 </html>
