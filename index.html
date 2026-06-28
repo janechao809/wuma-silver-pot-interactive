@@ -1,0 +1,2957 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鎏金舞马衔杯纹银壶互动欣赏</title>
+  <style>
+    @font-face {
+      font-family: "PuHui";
+      src: url("./assets/fonts/Alibaba-PuHuiTi-Regular.otf") format("opentype");
+      font-weight: 400;
+    }
+
+    @font-face {
+      font-family: "PuHui";
+      src: url("./assets/fonts/Alibaba-PuHuiTi-Bold.otf") format("opentype");
+      font-weight: 700;
+    }
+
+    :root {
+      --ink: #172723;
+      --deep: #073b32;
+      --jade: #0f7a63;
+      --jade-2: #18a981;
+      --gold: #d7a038;
+      --gold-2: #f2cf74;
+      --cinnabar: #b74e2b;
+      --paper: #f7f1e4;
+      --paper-2: #fffaf0;
+      --silver: #c9d1cd;
+      --line: rgba(23, 39, 35, .16);
+      --shadow: 0 22px 60px rgba(7, 59, 50, .18);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "PuHui", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(242, 207, 116, .34), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(24, 169, 129, .18), transparent 30%),
+        linear-gradient(135deg, #fbf7ee 0%, #eef7ef 48%, #f8efe0 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(7, 59, 50, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(7, 59, 50, .035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.72), transparent 84%);
+      z-index: 0;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px clamp(18px, 4vw, 54px);
+      background: rgba(247, 241, 228, .86);
+      border-bottom: 1px solid rgba(7, 59, 50, .14);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .seal {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border: 2px solid var(--deep);
+      border-radius: 50%;
+      color: var(--deep);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      background: #fff7e8;
+      box-shadow: inset 0 0 0 5px rgba(215, 160, 56, .16);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(18px, 2.5vw, 28px);
+      line-height: 1.15;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: rgba(23, 39, 35, .66);
+      font-size: 13px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a,
+    .tool-btn {
+      border: 1px solid rgba(7, 59, 50, .2);
+      background: rgba(255, 250, 240, .72);
+      color: var(--deep);
+      border-radius: 999px;
+      text-decoration: none;
+      padding: 9px 13px;
+      font-size: 14px;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .nav a:hover,
+    .tool-btn:hover {
+      transform: translateY(-2px);
+      background: #fffaf0;
+      border-color: rgba(7, 59, 50, .42);
+    }
+
+    .hero {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: minmax(320px, 1.1fr) minmax(360px, .9fr);
+      gap: clamp(22px, 4vw, 54px);
+      align-items: center;
+      padding: clamp(28px, 5vw, 70px) clamp(18px, 5vw, 72px) 38px;
+    }
+
+    .hero-copy {
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 8px 12px;
+      color: var(--deep);
+      border: 1px solid rgba(7, 59, 50, .18);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, .8);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 7px rgba(215, 160, 56, .16);
+    }
+
+    .hero h2 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(38px, 7vw, 84px);
+      line-height: .98;
+      letter-spacing: 0;
+      color: var(--deep);
+    }
+
+    .hero h2 span {
+      display: block;
+      color: transparent;
+      background: linear-gradient(90deg, #8b6824, #d7a038 45%, #78551e);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      max-width: 680px;
+      margin: 22px 0 0;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.65;
+      color: rgba(23, 39, 35, .78);
+    }
+
+    .mission-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 28px;
+      max-width: 760px;
+    }
+
+    .mission-card {
+      padding: 13px 12px;
+      border: 1px solid rgba(7, 59, 50, .15);
+      border-radius: var(--radius);
+      background: rgba(255, 250, 240, .7);
+      box-shadow: 0 12px 30px rgba(7, 59, 50, .08);
+    }
+
+    .mission-card b {
+      display: block;
+      color: var(--deep);
+      font-size: 17px;
+    }
+
+    .mission-card span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(23, 39, 35, .62);
+      font-size: 13px;
+    }
+
+    .hero-panel {
+      position: relative;
+      min-height: 580px;
+      border: 1px solid rgba(7, 59, 50, .16);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,250,240,.86), rgba(236,247,238,.78)),
+        url("./assets/appreciation-method.png") center / cover;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(7, 59, 50, .88), rgba(7, 59, 50, .28) 52%, rgba(255,250,240,.78));
+    }
+
+    .hero-panel-inner {
+      position: absolute;
+      inset: 24px;
+      display: grid;
+      align-content: end;
+      color: #fffaf0;
+    }
+
+    .hero-panel-title {
+      max-width: 420px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .hero-panel-sub {
+      max-width: 430px;
+      margin-top: 14px;
+      color: rgba(255, 250, 240, .84);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .start-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .primary,
+    .secondary {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-weight: 700;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .primary {
+      color: #172723;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      box-shadow: 0 16px 30px rgba(215, 160, 56, .28);
+    }
+
+    .secondary {
+      color: #fffaf0;
+      background: rgba(255, 250, 240, .16);
+      border: 1px solid rgba(255, 250, 240, .36);
+    }
+
+    .primary:hover,
+    .secondary:hover {
+      transform: translateY(-3px);
+    }
+
+    .section {
+      padding: clamp(34px, 5vw, 70px) clamp(18px, 5vw, 72px);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .section-kicker {
+      color: var(--cinnabar);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .section h3 {
+      margin: 7px 0 0;
+      color: var(--deep);
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.1;
+    }
+
+    .section-desc {
+      max-width: 560px;
+      margin: 0;
+      color: rgba(23, 39, 35, .68);
+      line-height: 1.7;
+    }
+
+    .lab {
+      display: grid;
+      grid-template-columns: minmax(360px, 1.08fr) minmax(340px, .92fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .artifact-stage,
+    .evidence-panel,
+    .challenge,
+    .worksheet,
+    .story-board,
+    .final-card {
+      border: 1px solid rgba(7, 59, 50, .15);
+      border-radius: 16px;
+      background: rgba(255, 250, 240, .76);
+      box-shadow: var(--shadow);
+    }
+
+    .artifact-stage {
+      position: relative;
+      min-height: 690px;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      color: var(--deep);
+      background: #eef8ed;
+      border: 1px solid rgba(7, 59, 50, .14);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--jade-2);
+    }
+
+    .artifact-canvas {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 610px;
+      margin-top: 10px;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,.96), rgba(241,231,210,.7) 62%, rgba(7,59,50,.08)),
+        repeating-linear-gradient(90deg, transparent 0 42px, rgba(7,59,50,.035) 42px 43px);
+      overflow: hidden;
+    }
+
+    .artifact-canvas.is-3d {
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .artifact-canvas.is-3d:active {
+      cursor: grabbing;
+    }
+
+    .artifact-canvas::before {
+      content: "";
+      position: absolute;
+      width: 68%;
+      height: 38%;
+      left: 16%;
+      bottom: 24px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(7, 59, 50, .2), transparent 64%);
+      filter: blur(18px);
+    }
+
+    .artifact-wrap {
+      position: relative;
+      width: min(78%, 540px);
+      aspect-ratio: 469 / 499;
+      transform-style: preserve-3d;
+      animation: revealFloat 5.4s ease-in-out infinite;
+    }
+
+    .artifact-wrap.model-mode {
+      width: min(92%, 660px);
+      aspect-ratio: 1 / 1;
+      animation: none;
+    }
+
+    #artifact3d {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .artifact-reference {
+      opacity: 0;
+    }
+
+    .model-hint {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 8;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      max-width: calc(100% - 36px);
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--deep);
+      background: rgba(255, 250, 240, .86);
+      border: 1px solid rgba(7, 59, 50, .14);
+      box-shadow: 0 12px 30px rgba(7, 59, 50, .12);
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .view-controls {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      z-index: 8;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: calc(100% - 36px);
+    }
+
+    .view-controls button {
+      border: 1px solid rgba(7, 59, 50, .18);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: var(--deep);
+      background: rgba(255, 250, 240, .84);
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(7, 59, 50, .1);
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .view-controls button:hover {
+      transform: translateY(-2px);
+      background: #fffaf0;
+    }
+
+    .artifact-wrap img {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 28px 34px rgba(0, 0, 0, .22));
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .artifact-glint {
+      position: absolute;
+      inset: 5% 12% 9%;
+      z-index: 3;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 0 35%, rgba(255,255,255,.36) 45%, transparent 56%);
+      mix-blend-mode: screen;
+      transform: translateX(-70%);
+      animation: glint 4.6s ease-in-out infinite;
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 6;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 8px rgba(215, 160, 56, .18), 0 0 0 16px rgba(215, 160, 56, .08);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .hotspot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      top: -38px;
+      transform: translateX(-50%);
+      min-width: max-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #fffaf0;
+      background: rgba(7, 59, 50, .9);
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, top .2s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot.active {
+      transform: scale(1.18);
+      background: var(--jade-2);
+    }
+
+    .hotspot:hover::after,
+    .hotspot.active::after {
+      opacity: 1;
+      top: -44px;
+    }
+
+    .hotspot.seen {
+      background: var(--jade-2);
+      box-shadow: 0 0 0 8px rgba(24, 169, 129, .18), 0 0 0 16px rgba(24, 169, 129, .08);
+    }
+
+    .hs-handle { left: 46%; top: 18%; }
+    .hs-lid { left: 66%; top: 28%; }
+    .hs-chain { left: 68%; top: 41%; }
+    .hs-shape { left: 25%; top: 56%; }
+    .hs-horse { left: 52%; top: 57%; }
+    .hs-craft { left: 56%; top: 80%; }
+
+    .lens {
+      position: absolute;
+      z-index: 9;
+      width: 190px;
+      height: 190px;
+      border: 5px solid rgba(255, 250, 240, .92);
+      border-radius: 50%;
+      background-image: url("./assets/wuma-silver-pot.png");
+      background-repeat: no-repeat;
+      background-size: 940px 1000px;
+      box-shadow: 0 20px 46px rgba(0,0,0,.28), inset 0 0 0 1px rgba(7,59,50,.2);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(.86);
+      pointer-events: none;
+      transition: opacity .16s ease, transform .16s ease;
+    }
+
+    .lens.on {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .evidence-panel {
+      min-height: 690px;
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(7, 59, 50, .1);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--jade-2), var(--gold));
+      transition: width .35s ease;
+    }
+
+    .fact-card {
+      position: relative;
+      padding: 22px;
+      min-height: 208px;
+      border-radius: 14px;
+      color: #fffaf0;
+      background:
+        linear-gradient(135deg, rgba(7,59,50,.96), rgba(15,122,99,.9)),
+        radial-gradient(circle at 90% 0, rgba(215,160,56,.3), transparent 34%);
+      overflow: hidden;
+    }
+
+    .fact-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -40% 45%;
+      height: 160px;
+      background: radial-gradient(circle, rgba(242,207,116,.24), transparent 68%);
+      animation: pulseGlow 3.6s ease-in-out infinite;
+    }
+
+    .fact-card h4 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.2;
+    }
+
+    .fact-card p {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0 0;
+      color: rgba(255,250,240,.86);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .prompt-box {
+      padding: 14px;
+      border: 1px dashed rgba(7, 59, 50, .26);
+      border-radius: 12px;
+      background: rgba(255, 250, 240, .68);
+    }
+
+    .prompt-box b {
+      color: var(--cinnabar);
+    }
+
+    .clue-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .clue {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .58);
+      border: 1px solid rgba(7, 59, 50, .11);
+      transform: translateX(12px);
+      opacity: .42;
+      transition: transform .25s ease, opacity .25s ease, background .25s ease;
+    }
+
+    .clue.revealed {
+      transform: translateX(0);
+      opacity: 1;
+      background: rgba(236, 247, 238, .9);
+    }
+
+    .clue-mark {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: #fffaf0;
+      background: var(--jade);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .tool-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .small-note {
+      color: rgba(23,39,35,.62);
+      font-size: 13px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 18px;
+      min-height: 310px;
+      border: 1px solid rgba(7, 59, 50, .15);
+      border-radius: 16px;
+      background: rgba(255, 250, 240, .78);
+      box-shadow: 0 18px 44px rgba(7, 59, 50, .11);
+      overflow: hidden;
+    }
+
+    .step-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: linear-gradient(90deg, var(--jade), var(--gold));
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fffaf0;
+      background: var(--deep);
+      font-weight: 700;
+    }
+
+    .step-card h4 {
+      margin: 14px 0 8px;
+      color: var(--deep);
+      font-size: 23px;
+    }
+
+    .step-card p {
+      min-height: 52px;
+      margin: 0 0 14px;
+      color: rgba(23, 39, 35, .66);
+      line-height: 1.6;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .choice {
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(7, 59, 50, .15);
+      border-radius: 10px;
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .choice:hover {
+      transform: translateX(4px);
+      border-color: rgba(7, 59, 50, .36);
+    }
+
+    .choice.selected {
+      color: var(--deep);
+      background: rgba(242, 207, 116, .28);
+      border-color: rgba(183, 78, 43, .42);
+      font-weight: 700;
+    }
+
+    .story-board {
+      display: grid;
+      grid-template-columns: minmax(320px, .9fr) minmax(360px, 1.1fr);
+      gap: 22px;
+      padding: 24px;
+    }
+
+    .story-scene {
+      min-height: 420px;
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, rgba(7,59,50,.08), rgba(215,160,56,.14)),
+        radial-gradient(circle at 50% 62%, rgba(215,160,56,.28), transparent 36%),
+        #fffaf0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .story-artifact {
+      width: min(70%, 300px);
+      filter: drop-shadow(0 24px 32px rgba(7,59,50,.24));
+      animation: stageTurn 7s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .story-video {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 65%, rgba(215,160,56,.26), transparent 34%),
+        linear-gradient(180deg, rgba(255,250,240,.88), rgba(232,246,236,.82));
+    }
+
+    .story-video::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,.36), transparent),
+        repeating-linear-gradient(90deg, rgba(7,59,50,.035) 0 1px, transparent 1px 44px);
+      transform: translateX(-70%);
+      animation: videoSweep 5s ease-in-out infinite;
+    }
+
+    .scene-player,
+    .external-player {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #fff8e8;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .scene-player.is-playing,
+    .external-player.is-playing {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .external-player {
+      border: 0;
+    }
+
+    .video-caption {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      z-index: 8;
+      max-width: calc(100% - 36px);
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: #fffaf0;
+      background: rgba(7,59,50,.88);
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(7,59,50,.18);
+    }
+
+    .video-artifact {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      z-index: 2;
+      width: min(58%, 260px);
+      transform: translateX(-50%);
+      filter: drop-shadow(0 18px 28px rgba(7,59,50,.24));
+      animation: artifactBreath 4.6s ease-in-out infinite;
+    }
+
+    .archive-map {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #f5dcc8;
+      border-radius: 14px;
+    }
+
+    .video-horse {
+      position: absolute;
+      z-index: 3;
+      width: min(44%, 210px);
+      filter: drop-shadow(0 12px 16px rgba(118,80,20,.22));
+      animation: horseDance 3.2s ease-in-out infinite;
+    }
+
+    .video-stage {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 40px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(7,59,50,.2), transparent 70%);
+      animation: stageGlow 3.5s ease-in-out infinite;
+    }
+
+    .video-light {
+      position: absolute;
+      z-index: 1;
+      width: 36%;
+      height: 96%;
+      top: -18%;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(242,207,116,.34), rgba(242,207,116,0));
+      filter: blur(3px);
+      transform-origin: top center;
+      mix-blend-mode: multiply;
+      animation: lightSwing 4s ease-in-out infinite;
+    }
+
+    .video-light.left {
+      left: 12%;
+      transform: rotate(16deg);
+    }
+
+    .video-light.right {
+      right: 10%;
+      animation-delay: -1.2s;
+      transform: rotate(-16deg);
+    }
+
+    .process-track {
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      bottom: 28px;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .process-step {
+      padding: 8px 6px;
+      border-radius: 9px;
+      color: var(--deep);
+      background: rgba(255,250,240,.86);
+      border: 1px solid rgba(7,59,50,.12);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      animation: processPop 4.8s ease-in-out infinite;
+    }
+
+    .process-step:nth-child(2) { animation-delay: .9s; }
+    .process-step:nth-child(3) { animation-delay: 1.8s; }
+    .process-step:nth-child(4) { animation-delay: 2.7s; }
+
+    .craft-sheet {
+      position: absolute;
+      left: 50%;
+      top: 28%;
+      z-index: 2;
+      width: min(56%, 250px);
+      transform: translateX(-50%);
+      filter: drop-shadow(0 18px 26px rgba(7,59,50,.2));
+      animation: craftPress 4.8s ease-in-out infinite;
+    }
+
+    .gilt-flash {
+      position: absolute;
+      left: 30%;
+      top: 32%;
+      z-index: 3;
+      width: 42%;
+      height: 24%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,207,116,.62), rgba(215,160,56,.18), transparent 68%);
+      filter: blur(2px);
+      animation: giltFlash 4.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .scene-player.is-playing,
+    .external-player.is-playing {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .story-video[data-scene="palace"] .scene-player.is-playing {
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    .story-video[data-scene="intro"] .video-artifact {
+      left: 50%;
+      bottom: 34px;
+      width: min(68%, 310px);
+      opacity: 1;
+      transform-origin: 50% 88%;
+      animation: introPotSway 5.2s ease-in-out infinite;
+    }
+
+    .story-video[data-scene="intro"] .archive-map,
+    .story-video[data-scene="intro"] .shape-reference,
+    .story-video[data-scene="intro"] .video-horse,
+    .story-video[data-scene="intro"] .craft-sheet,
+    .story-video[data-scene="intro"] .gilt-flash,
+    .story-video[data-scene="intro"] .process-track,
+    .story-video[data-scene="intro"] .video-light {
+      display: none;
+    }
+
+    .story-video[data-scene="palace"]::before,
+    .story-video[data-scene="palace"] .video-light,
+    .story-video[data-scene="palace"] .video-horse,
+    .story-video[data-scene="palace"] .video-artifact,
+    .story-video[data-scene="palace"] .palace-curtain,
+    .story-video[data-scene="palace"] .palace-floor,
+    .story-video[data-scene="palace"] .palace-note,
+    .story-video[data-scene="palace"] .palace-cup,
+    .story-video[data-scene="palace"] .cup-path {
+      display: none;
+    }
+
+    .video-caption {
+      left: 18px;
+      right: 18px;
+      top: auto;
+      bottom: 18px;
+      max-width: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      line-height: 1.45;
+      background: linear-gradient(90deg, rgba(7,59,50,.94), rgba(30,106,83,.86));
+      box-shadow: 0 14px 34px rgba(7,59,50,.22);
+    }
+
+    .shape-reference,
+    .pouch-photo,
+    .cup-path,
+    .craft-demo,
+    .palace-curtain,
+    .palace-floor,
+    .palace-note,
+    .palace-cup,
+    .craft-table,
+    .craft-anvil,
+    .craft-sheet-metal,
+    .craft-tool,
+    .craft-hand,
+    .craft-fire,
+    .craft-brush,
+    .craft-spark,
+    .craft-artisan {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .shape-reference {
+      left: 6%;
+      top: 15%;
+      z-index: 4;
+      width: min(44%, 210px);
+      min-height: 248px;
+      padding: 10px 10px 12px;
+      border-radius: 18px;
+      background: rgba(255,250,240,.92);
+      border: 1px solid rgba(7,59,50,.16);
+      box-shadow: 0 18px 36px rgba(7,59,50,.18);
+      text-align: center;
+      animation: referenceSlide 4.8s ease-in-out infinite;
+    }
+
+    .pouch-photo {
+      display: block;
+      position: static;
+      width: 100%;
+      height: 176px;
+      margin-bottom: 10px;
+      object-fit: cover;
+      object-position: 50% 58%;
+      border-radius: 12px;
+      filter: saturate(1.04) contrast(1.02);
+      box-shadow: inset 0 0 0 1px rgba(7,59,50,.12), 0 12px 22px rgba(7,59,50,.16);
+    }
+
+    .shape-reference b,
+    .shape-reference span {
+      display: block;
+      color: var(--deep);
+    }
+
+    .shape-reference b {
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .shape-reference span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .palace-curtain {
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(242,207,116,.24), transparent 36%),
+        linear-gradient(180deg, rgba(255,250,240,.94), rgba(235,247,239,.86));
+      opacity: .88;
+    }
+
+    .palace-floor {
+      left: 8%;
+      right: 8%;
+      bottom: 72px;
+      z-index: 1;
+      height: 88px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(215,160,56,.34), rgba(7,59,50,.08) 64%, transparent 72%);
+      animation: palaceFloor 3.6s ease-in-out infinite;
+    }
+
+    .palace-note {
+      z-index: 4;
+      width: 36px;
+      height: 36px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fffaf0;
+      background: rgba(183,78,43,.88);
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(183,78,43,.2);
+      animation: noteFloat 3.8s ease-in-out infinite;
+    }
+
+    .note-one { left: 18%; top: 24%; }
+    .note-two { left: 34%; top: 16%; animation-delay: .8s; }
+    .note-three { right: 18%; top: 27%; animation-delay: 1.4s; }
+
+    .palace-cup {
+      left: 60%;
+      top: 47%;
+      z-index: 5;
+      width: 34px;
+      height: 30px;
+      border-radius: 7px 7px 15px 15px;
+      background: linear-gradient(180deg, #f2cf74, #b97c22);
+      box-shadow: inset 0 4px 0 rgba(255,250,240,.45), 0 10px 22px rgba(118,80,20,.24);
+      animation: cupWithHorse 4s ease-in-out infinite;
+    }
+
+    .cup-path {
+      left: 34%;
+      top: 43%;
+      z-index: 4;
+      display: none;
+      width: 36%;
+      height: 2px;
+      border-top: 2px dashed rgba(183,78,43,.32);
+      transform: rotate(-10deg);
+      transform-origin: left center;
+    }
+
+    .craft-demo {
+      left: 7%;
+      right: 7%;
+      top: 86px;
+      bottom: 46px;
+      z-index: 3;
+      display: none;
+      width: 86%;
+      height: calc(100% - 132px);
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(7,59,50,.12);
+      box-shadow: 0 18px 36px rgba(7,59,50,.18);
+      background: #fffaf0;
+    }
+
+    .craft-table {
+      left: 9%;
+      right: 9%;
+      bottom: 78px;
+      z-index: 1;
+      height: 58px;
+      border-radius: 18px 18px 28px 28px;
+      background: linear-gradient(180deg, #9b6236, #50301e);
+      box-shadow: 0 18px 28px rgba(7,59,50,.2);
+    }
+
+    .craft-anvil {
+      left: 18%;
+      bottom: 132px;
+      z-index: 3;
+      width: 112px;
+      height: 56px;
+      border-radius: 12px 12px 18px 18px;
+      background: linear-gradient(180deg, #758078, #27302e);
+      box-shadow: inset 0 10px 12px rgba(255,255,255,.18), 0 14px 18px rgba(7,59,50,.24);
+    }
+
+    .craft-sheet-metal {
+      left: 22%;
+      bottom: 178px;
+      z-index: 4;
+      width: 86px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #d9ded8, #fff7d4, #9fa9a3);
+      transform-origin: center;
+      animation: metalBeat 4.8s ease-in-out infinite;
+    }
+
+    .craft-tool.hammer {
+      left: 23%;
+      bottom: 206px;
+      z-index: 6;
+      width: 24px;
+      height: 86px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #59351f, #2c1c14);
+      transform-origin: bottom center;
+      animation: hammerStrike 1.35s cubic-bezier(.2,.78,.24,1) infinite;
+    }
+
+    .craft-tool.hammer::before {
+      content: "";
+      position: absolute;
+      left: -34px;
+      top: -16px;
+      width: 92px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #6b736f, #222a28);
+      box-shadow: inset 0 6px 8px rgba(255,255,255,.18);
+    }
+
+    .craft-hand {
+      z-index: 5;
+      width: 78px;
+      height: 34px;
+      border-radius: 22px 18px 18px 22px;
+      background: linear-gradient(180deg, #d7a06b, #9f6238);
+      box-shadow: inset 0 -6px 8px rgba(82,45,24,.22), 0 10px 18px rgba(7,59,50,.15);
+    }
+
+    .craft-hand.left {
+      left: 12%;
+      bottom: 188px;
+      transform: rotate(-8deg);
+      animation: leftHandWork 2.4s ease-in-out infinite;
+    }
+
+    .craft-hand.right {
+      right: 20%;
+      bottom: 170px;
+      transform: rotate(12deg);
+      animation: rightHandWork 3.2s ease-in-out infinite;
+    }
+
+    .craft-fire {
+      right: 30%;
+      bottom: 134px;
+      z-index: 4;
+      width: 80px;
+      height: 86px;
+      border-radius: 48% 48% 42% 42%;
+      background:
+        radial-gradient(circle at 50% 68%, #fff3a5 0 18%, transparent 20%),
+        radial-gradient(circle at 50% 48%, #f2cf74 0 30%, transparent 32%),
+        radial-gradient(circle at 50% 64%, #b74e2b 0 50%, transparent 53%);
+      filter: drop-shadow(0 0 16px rgba(215,160,56,.46));
+      animation: firePulse 1.1s ease-in-out infinite;
+    }
+
+    .craft-brush {
+      right: 16%;
+      bottom: 214px;
+      z-index: 6;
+      width: 26px;
+      height: 104px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #2a1b12 0 68%, #f2cf74 69% 100%);
+      transform-origin: bottom center;
+      animation: giltBrush 3.4s ease-in-out infinite;
+    }
+
+    .craft-spark {
+      z-index: 7;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f2cf74;
+      box-shadow: 0 0 16px rgba(242,207,116,.8);
+      animation: sparkFly 1.5s ease-out infinite;
+    }
+
+    .spark-one { left: 27%; bottom: 202px; }
+    .spark-two { left: 32%; bottom: 178px; animation-delay: .35s; }
+    .spark-three { right: 34%; bottom: 210px; animation-delay: .72s; }
+
+    .craft-artisan {
+      left: 8%;
+      top: 25%;
+      z-index: 2;
+      width: 74px;
+      height: 96px;
+      border-radius: 28px 28px 18px 18px;
+      background: linear-gradient(180deg, #315b4b, #18352d);
+      box-shadow: 0 16px 24px rgba(7,59,50,.22);
+    }
+
+    .craft-artisan::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      top: -24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #d7a06b;
+    }
+
+    .craft-artisan::after {
+      content: "匠";
+      position: absolute;
+      left: 50%;
+      top: 34px;
+      transform: translateX(-50%);
+      color: rgba(255,250,240,.86);
+      font-weight: 800;
+    }
+
+    .story-video[data-scene="archive"] .video-horse,
+    .story-video[data-scene="archive"] .video-light,
+    .story-video[data-scene="archive"] .craft-sheet,
+    .story-video[data-scene="archive"] .gilt-flash,
+    .story-video[data-scene="archive"] .process-track,
+    .story-video[data-scene="shape"] .video-horse,
+    .story-video[data-scene="shape"] .video-light,
+    .story-video[data-scene="shape"] .craft-sheet,
+    .story-video[data-scene="shape"] .gilt-flash,
+    .story-video[data-scene="shape"] .process-track,
+    .story-video[data-scene="shape"] .video-light {
+      display: none;
+    }
+
+    .story-video[data-scene="shape"] .video-artifact {
+      width: min(62%, 270px);
+      opacity: .92;
+    }
+
+    .story-video[data-scene="archive"] .video-artifact,
+    .story-video[data-scene="archive"] .video-stage {
+      display: none;
+    }
+
+    .story-video[data-scene="archive"] .archive-map {
+      display: block;
+    }
+
+    .story-video[data-scene="shape"] .video-artifact {
+      animation: stageTurn 5.8s ease-in-out infinite;
+      left: auto;
+      right: 7%;
+      bottom: 36px;
+      width: min(46%, 210px);
+      transform: none;
+    }
+
+    .story-video[data-scene="shape"] .shape-reference {
+      display: block;
+    }
+
+    .story-video[data-scene="palace"] .video-horse {
+      left: 13%;
+      bottom: 128px;
+      z-index: 5;
+      width: min(62%, 300px);
+      image-rendering: auto;
+      filter: sepia(.2) saturate(1.7) contrast(1.3) drop-shadow(0 16px 18px rgba(118,80,20,.28));
+      animation: horseCupDemo 4s ease-in-out infinite;
+    }
+
+    .story-video[data-scene="palace"] .video-artifact {
+      opacity: .12;
+      right: 6%;
+      left: auto;
+      transform: none;
+    }
+
+    .story-video[data-scene="craft"] .video-horse,
+    .story-video[data-scene="craft"] .video-light {
+      display: none;
+    }
+
+    .story-video[data-scene="palace"] .craft-sheet,
+    .story-video[data-scene="palace"] .gilt-flash,
+    .story-video[data-scene="palace"] .process-track {
+      display: none;
+    }
+
+    .story-video[data-scene="craft"] .video-artifact {
+      display: none;
+    }
+
+    .story-video[data-scene="craft"] .craft-sheet,
+    .story-video[data-scene="craft"] .gilt-flash,
+    .story-video[data-scene="craft"] .process-track {
+      display: none;
+    }
+
+    .story-video[data-scene="craft"] .process-track {
+      display: none;
+      bottom: 18px;
+      z-index: 8;
+    }
+
+    .story-video[data-scene="craft"] .video-caption {
+      top: 18px;
+      bottom: auto;
+      right: 92px;
+    }
+
+    .story-video[data-scene="craft"] .craft-table,
+    .story-video[data-scene="craft"] .craft-anvil,
+    .story-video[data-scene="craft"] .craft-sheet-metal,
+    .story-video[data-scene="craft"] .craft-tool,
+    .story-video[data-scene="craft"] .craft-hand,
+    .story-video[data-scene="craft"] .craft-fire,
+    .story-video[data-scene="craft"] .craft-brush,
+    .story-video[data-scene="craft"] .craft-spark,
+    .story-video[data-scene="craft"] .craft-artisan {
+      display: none;
+    }
+
+    .story-video[data-scene="craft"] .craft-demo {
+      display: block;
+    }
+
+    .orbit-text {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 5;
+      width: auto;
+      height: auto;
+      border: 0;
+      border-radius: 0;
+      animation: none;
+      pointer-events: none;
+    }
+
+    .orbit-text span {
+      position: static;
+      transform: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #fffaf0;
+      background: var(--cinnabar);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      align-content: center;
+    }
+
+    .timeline button {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 12px;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid rgba(7, 59, 50, .14);
+      border-radius: 12px;
+      background: rgba(255,255,255,.54);
+      text-align: left;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .timeline button:hover,
+    .timeline button.active {
+      transform: translateX(6px);
+      background: rgba(236,247,238,.95);
+    }
+
+    .time {
+      color: var(--cinnabar);
+      font-weight: 700;
+    }
+
+    .timeline b {
+      display: block;
+      color: var(--deep);
+      font-size: 18px;
+    }
+
+    .timeline span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(23,39,35,.68);
+      line-height: 1.5;
+    }
+
+    .challenge {
+      padding: 24px;
+    }
+
+    .match-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, .8fr) minmax(360px, 1.2fr);
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .draggables,
+    .dropzones {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .drag-card,
+    .drop-zone {
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(7,59,50,.16);
+      background: rgba(255,255,255,.6);
+    }
+
+    .drag-card {
+      font-weight: 700;
+      color: var(--deep);
+      cursor: grab;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .drag-card:active {
+      cursor: grabbing;
+    }
+
+    .drag-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(7,59,50,.12);
+    }
+
+    .drag-card.matched {
+      opacity: .36;
+      cursor: default;
+    }
+
+    .drop-zone {
+      min-height: 76px;
+      display: grid;
+      gap: 6px;
+      border-style: dashed;
+    }
+
+    .drop-zone.over {
+      background: rgba(242,207,116,.22);
+    }
+
+    .drop-zone.correct {
+      border-style: solid;
+      border-color: rgba(24,169,129,.58);
+      background: rgba(236,247,238,.95);
+    }
+
+    .drop-zone b {
+      color: var(--deep);
+    }
+
+    .drop-zone span {
+      color: rgba(23,39,35,.64);
+      line-height: 1.45;
+    }
+
+    .worksheet {
+      padding: 24px;
+    }
+
+    .worksheet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    label.note-cell {
+      display: grid;
+      gap: 8px;
+      color: var(--deep);
+      font-weight: 700;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      min-height: 104px;
+      padding: 12px;
+      color: var(--ink);
+      border: 1px solid rgba(7, 59, 50, .18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .68);
+      outline: none;
+      resize: vertical;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input {
+      min-height: auto;
+    }
+
+    textarea:focus,
+    input:focus {
+      border-color: rgba(15,122,99,.68);
+      box-shadow: 0 0 0 4px rgba(24,169,129,.12);
+    }
+
+    .final-card {
+      margin-top: 16px;
+      padding: 20px;
+      background:
+        linear-gradient(135deg, rgba(7,59,50,.95), rgba(95,70,26,.92)),
+        radial-gradient(circle at 100% 10%, rgba(242,207,116,.3), transparent 36%);
+      color: #fffaf0;
+      overflow: hidden;
+    }
+
+    .final-card h4 {
+      margin: 0 0 8px;
+      font-size: 23px;
+    }
+
+    .final-output {
+      min-height: 86px;
+      margin: 12px 0 0;
+      padding: 15px;
+      border-radius: 12px;
+      color: #1f2724;
+      background: #fffaf0;
+      line-height: 1.7;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 50;
+      width: min(360px, calc(100vw - 48px));
+      padding: 15px 16px;
+      color: #fffaf0;
+      background: rgba(7, 59, 50, .94);
+      border: 1px solid rgba(255,250,240,.2);
+      border-radius: 12px;
+      box-shadow: 0 18px 46px rgba(7,59,50,.3);
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .24s ease, opacity .24s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .confetti {
+      position: fixed;
+      top: -20px;
+      z-index: 60;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--gold);
+      animation: fall 1.4s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes revealFloat {
+      0%, 100% { transform: translateY(0) rotateX(0deg); }
+      50% { transform: translateY(-12px) rotateX(3deg); }
+    }
+
+    @keyframes glint {
+      0%, 20% { transform: translateX(-86%); opacity: 0; }
+      45% { opacity: .55; }
+      70%, 100% { transform: translateX(92%); opacity: 0; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: .45; transform: scale(.9); }
+      50% { opacity: 1; transform: scale(1.12); }
+    }
+
+    @keyframes stageTurn {
+      0%, 100% { transform: rotate(-3deg) scale(1); }
+      50% { transform: rotate(3deg) scale(1.03); }
+    }
+
+    @keyframes slowSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes videoSweep {
+      0%, 22% { transform: translateX(-78%); opacity: .2; }
+      55% { opacity: .7; }
+      100% { transform: translateX(78%); opacity: .15; }
+    }
+
+    @keyframes artifactBreath {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.035); }
+    }
+
+    @keyframes introPotSway {
+      0%, 100% { transform: translateX(-50%) rotate(-2.4deg) scale(1); }
+      50% { transform: translateX(-50%) rotate(2.4deg) scale(1.025); }
+    }
+
+    @keyframes horseDance {
+      0%, 100% { transform: translateX(0) translateY(0) rotate(-4deg) scale(1); }
+      30% { transform: translateX(36px) translateY(-14px) rotate(5deg) scale(1.08); }
+      62% { transform: translateX(88px) translateY(5px) rotate(-2deg) scale(.98); }
+    }
+
+    @keyframes horseCupDemo {
+      0%, 100% { transform: translateX(0) translateY(0) rotate(-2deg) scale(1); }
+      24% { transform: translateX(18px) translateY(-8px) rotate(2deg) scale(1.03); }
+      52% { transform: translateX(46px) translateY(8px) rotate(-4deg) scale(1.04); }
+      72% { transform: translateX(72px) translateY(0) rotate(0deg) scale(1.02); }
+    }
+
+    @keyframes stageGlow {
+      0%, 100% { opacity: .48; transform: scaleX(1); }
+      50% { opacity: .72; transform: scaleX(1.08); }
+    }
+
+    @keyframes lightSwing {
+      0%, 100% { transform: rotate(14deg); opacity: .28; }
+      50% { transform: rotate(-10deg); opacity: .5; }
+    }
+
+    @keyframes processPop {
+      0%, 100% { transform: translateY(0); background: rgba(255,250,240,.86); }
+      16% { transform: translateY(-8px); background: rgba(242,207,116,.42); }
+      30% { transform: translateY(0); background: rgba(255,250,240,.86); }
+    }
+
+    @keyframes craftPress {
+      0%, 100% { transform: translateX(-50%) scale(1) rotate(-2deg); filter: drop-shadow(0 18px 26px rgba(7,59,50,.2)); }
+      35% { transform: translateX(-50%) scale(.92, 1.04) rotate(2deg); filter: drop-shadow(0 10px 16px rgba(7,59,50,.2)); }
+      68% { transform: translateX(-50%) scale(1.03) rotate(-1deg); }
+    }
+
+    @keyframes giltFlash {
+      0%, 30%, 100% { opacity: 0; transform: scale(.72); }
+      50% { opacity: .9; transform: scale(1.08); }
+      70% { opacity: .35; transform: scale(1.24); }
+    }
+
+    @keyframes referenceSlide {
+      0%, 100% { transform: translateX(0) rotate(-1deg); }
+      50% { transform: translateX(8px) rotate(1deg); }
+    }
+
+    @keyframes palaceFloor {
+      0%, 100% { transform: scaleX(.96); opacity: .62; }
+      50% { transform: scaleX(1.06); opacity: .86; }
+    }
+
+    @keyframes noteFloat {
+      0%, 100% { transform: translateY(0) scale(.9); opacity: .45; }
+      45% { transform: translateY(-28px) scale(1.08); opacity: 1; }
+      80% { transform: translateY(-8px) scale(.98); opacity: .72; }
+    }
+
+    @keyframes cupToast {
+      0%, 100% { transform: translate(0, 12px) rotate(-7deg); opacity: .7; }
+      42% { transform: translate(-82px, 24px) rotate(8deg) scale(1.08); opacity: 1; }
+      70% { transform: translate(-54px, 8px) rotate(-2deg); opacity: .88; }
+    }
+
+    @keyframes metalBeat {
+      0%, 100% { transform: scaleX(1) scaleY(1); }
+      18% { transform: scaleX(1.16) scaleY(.74); }
+      36% { transform: scaleX(.96) scaleY(1.08); }
+    }
+
+    @keyframes hammerStrike {
+      0%, 100% { transform: rotate(-42deg) translateY(-18px); }
+      58% { transform: rotate(-42deg) translateY(-18px); }
+      72% { transform: rotate(-4deg) translateY(10px); }
+      82% { transform: rotate(-34deg) translateY(-8px); }
+    }
+
+    @keyframes leftHandWork {
+      0%, 100% { transform: translateX(0) rotate(-8deg); }
+      50% { transform: translateX(18px) rotate(-2deg); }
+    }
+
+    @keyframes rightHandWork {
+      0%, 100% { transform: translateX(0) rotate(12deg); }
+      46% { transform: translateX(-26px) rotate(2deg); }
+    }
+
+    @keyframes firePulse {
+      0%, 100% { transform: scale(.92) skewX(-3deg); opacity: .72; }
+      50% { transform: scale(1.12) skewX(4deg); opacity: 1; }
+    }
+
+    @keyframes giltBrush {
+      0%, 100% { transform: rotate(34deg) translate(0, 0); }
+      45% { transform: rotate(58deg) translate(-34px, 20px); }
+      74% { transform: rotate(42deg) translate(-18px, 8px); }
+    }
+
+    @keyframes sparkFly {
+      0% { transform: translate(0, 0) scale(.5); opacity: 0; }
+      22% { opacity: 1; }
+      100% { transform: translate(34px, -52px) scale(1.1); opacity: 0; }
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(560deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .lab,
+      .story-board,
+      .match-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        min-height: 420px;
+      }
+
+      .steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        position: relative;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .mission-strip,
+      .steps,
+      .worksheet-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .artifact-stage,
+      .evidence-panel {
+        min-height: auto;
+      }
+
+      .artifact-canvas {
+        min-height: 500px;
+      }
+
+      .artifact-wrap {
+        width: 92%;
+      }
+
+      .hotspot {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="seal">唐</div>
+        <div>
+          <h1>鎏金舞马衔杯纹银壶互动欣赏</h1>
+          <p>六年级美术课 · 证据化欣赏</p>
+        </div>
+      </div>
+      <nav class="nav" aria-label="课堂导航">
+        <a href="#observe">文物探查</a>
+        <a href="#method">四步欣赏</a>
+        <a href="#challenge">证据挑战</a>
+        <a href="#worksheet">学习单</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">典型文物 · 唐代 · 陕西历史博物馆</div>
+          <h2>像侦探一样，读懂一只<span>会讲唐朝故事的银壶</span></h2>
+          <p class="hero-lead">
+            这件银壶出自何家村窖藏，造型借鉴北方游牧民族皮囊壶，壶腹上有鎏金舞马衔杯纹。今天不急着背知识，先用眼睛找证据，再用“描述、分析、解释、评价”说出自己的发现。
+          </p>
+          <div class="mission-strip" aria-label="欣赏四步">
+            <div class="mission-card"><b>描述</b><span>看到了什么</span></div>
+            <div class="mission-card"><b>分析</b><span>有什么特点</span></div>
+            <div class="mission-card"><b>解释</b><span>表达了什么</span></div>
+            <div class="mission-card"><b>评价</b><span>有什么价值</span></div>
+          </div>
+          <div class="start-row">
+            <button class="primary" data-scroll="#observe">开始探查文物</button>
+            <button class="secondary" data-scroll="#worksheet">直接填写学习单</button>
+          </div>
+        </div>
+        <div class="hero-panel" aria-label="学习方法参考图">
+          <div class="hero-panel-inner">
+            <div class="hero-panel-title">把欣赏变成一次“证据采集”</div>
+            <div class="hero-panel-sub">
+              每点亮一个部位，就得到一条可写进学习单的证据。小组讨论时，可以先说“我看见……所以我推测……”。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="observe">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">01 · 互动观察</div>
+            <h3>点击银壶，点亮你的证据</h3>
+          </div>
+          <p class="section-desc">热点覆盖造型、纹样与工艺三类证据。教师可投屏引导，学生也可分组轮流点击并讲出判断理由。</p>
+        </div>
+
+        <div class="lab">
+          <div class="artifact-stage">
+            <div class="stage-top">
+              <span class="badge">已采集 <span id="foundCount">0</span>/6 条证据</span>
+              <button class="tool-btn" id="lensToggle" type="button">开启纹样放大镜</button>
+            </div>
+            <div class="artifact-canvas is-3d" id="artifactCanvas">
+              <div class="artifact-wrap model-mode">
+                <canvas id="artifact3d" aria-label="可旋转观察的唐鎏金舞马衔杯纹皮囊式银壶3D教学模型"></canvas>
+                <img class="artifact-reference" src="./assets/wuma-silver-pot.png" alt="唐鎏金舞马衔杯纹皮囊式银壶参考图">
+                <div class="artifact-glint" aria-hidden="true"></div>
+                <button class="hotspot hs-handle" data-id="handle" data-label="提梁银链" aria-label="查看提梁银链"></button>
+                <button class="hotspot hs-lid" data-id="lid" data-label="壶盖莲瓣" aria-label="查看壶盖莲瓣"></button>
+                <button class="hotspot hs-chain" data-id="chain" data-label="连接结构" aria-label="查看连接结构"></button>
+                <button class="hotspot hs-shape" data-id="shape" data-label="皮囊造型" aria-label="查看皮囊造型"></button>
+                <button class="hotspot hs-horse" data-id="horse" data-label="鎏金舞马" aria-label="查看鎏金舞马"></button>
+                <button class="hotspot hs-craft" data-id="craft" data-label="捶揲模压" aria-label="查看捶揲模压"></button>
+              </div>
+              <div class="view-controls" aria-label="3D观察视角">
+                <button type="button" data-view="front">正面</button>
+                <button type="button" data-view="side">侧面</button>
+                <button type="button" data-view="top">俯看</button>
+                <button type="button" data-view="spin">自动旋转</button>
+              </div>
+              <div class="model-hint">拖拽旋转 · 滚轮缩放 · 点热点收集证据</div>
+              <div class="lens" id="lens" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <aside class="evidence-panel" aria-live="polite">
+            <div>
+              <div class="badge">证据采集进度</div>
+              <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+            </div>
+
+            <div class="fact-card" id="factCard">
+              <h4>先点一点银壶</h4>
+              <p>从你最感兴趣的部位开始：它的形状像什么？马为什么是金色？链子和提梁有什么用？</p>
+            </div>
+
+            <div class="prompt-box" id="promptBox">
+              <b>观察提示：</b>先说事实，再说推测。例如：“我看到马低头衔杯，所以我推测它和宴会祝寿有关。”
+            </div>
+
+            <div class="clue-list" id="clueList">
+              <div class="clue" data-clue="shape"><span class="clue-mark">1</span><span>造型证据：扁圆壶身模仿北方游牧民族使用的皮囊壶。</span></div>
+              <div class="clue" data-clue="horse"><span class="clue-mark">2</span><span>纹样证据：壶腹两面模出相互对应的舞马，马衔杯、匐拜。</span></div>
+              <div class="clue" data-clue="craft"><span class="clue-mark">3</span><span>工艺证据：银板捶打成形，模压纹样，再焊接、打磨，局部鎏金。</span></div>
+              <div class="clue" data-clue="lid"><span class="clue-mark">4</span><span>装饰证据：壶盖帽为捶揲成型的覆式莲瓣，精巧又有仪式感。</span></div>
+              <div class="clue" data-clue="handle"><span class="clue-mark">5</span><span>结构证据：弓形提梁与银链连接，既实用，也强化华丽感。</span></div>
+              <div class="clue" data-clue="chain"><span class="clue-mark">6</span><span>时代证据：这件文物出自何家村窖藏，见证唐代生活、交流与工艺。</span></div>
+            </div>
+
+            <div class="tool-row">
+              <button class="primary" id="autoFill" type="button">把证据带入学习单</button>
+              <span class="small-note">点击越多，结论越完整。</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="method">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">02 · 学习证据化欣赏</div>
+            <h3>四步法：从眼前证据走向文化理解</h3>
+          </div>
+          <p class="section-desc">每一步选一个你最认同的判断，页面会把选择转化成学习单中的关键词。</p>
+        </div>
+
+        <div class="steps">
+          <article class="step-card">
+            <div class="step-num">1</div>
+            <h4>描述：看到了什么</h4>
+            <p>先记录能被同学看见、验证的视觉事实。</p>
+            <div class="choice-list" data-step="describe">
+              <button class="choice" data-value="扁圆壶身、弓形提梁、银链、壶腹上的鎏金舞马">扁圆壶身、弓形提梁、银链、鎏金舞马</button>
+              <button class="choice" data-value="马低头衔杯，身体呈匐拜姿态">马低头衔杯，身体呈匐拜姿态</button>
+              <button class="choice" data-value="银色壶身与金色纹样形成强烈对比">银色壶身与金色纹样形成强烈对比</button>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="step-num">2</div>
+            <h4>分析：有什么艺术特点</h4>
+            <p>从造型、纹样、材料、工艺角度找特点。</p>
+            <div class="choice-list" data-step="analyze">
+              <button class="choice" data-value="造型借鉴皮囊壶，体现实用与装饰结合">造型借鉴皮囊壶，实用与装饰结合</button>
+              <button class="choice" data-value="舞马纹样生动，动作有节奏感">舞马纹样生动，动作有节奏感</button>
+              <button class="choice" data-value="捶揲、模压、焊接、鎏金等工艺精细">多种金银器工艺精细结合</button>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="step-num">3</div>
+            <h4>解释：表达了什么</h4>
+            <p>把视觉证据和唐代宫廷生活、民族交流联系起来。</p>
+            <div class="choice-list" data-step="interpret">
+              <button class="choice" data-value="舞马衔杯与唐玄宗时期千秋节祝寿表演有关">与千秋节祝寿舞马表演有关</button>
+              <button class="choice" data-value="皮囊壶造型体现民族文化交流融合">体现民族文化交流融合</button>
+              <button class="choice" data-value="华丽工艺反映唐代宫廷审美和金银器技术水平">反映唐代宫廷审美和技术水平</button>
+            </div>
+          </article>
+
+          <article class="step-card">
+            <div class="step-num">4</div>
+            <h4>评价：有什么文化价值</h4>
+            <p>用一句话说明它为什么值得被珍视。</p>
+            <div class="choice-list" data-step="evaluate">
+              <button class="choice" data-value="它是认识唐代生活、审美、礼仪和工艺的重要实物证据">认识唐代生活与工艺的重要证据</button>
+              <button class="choice" data-value="它把造型、纹样和历史故事结合在一件器物中">造型、纹样和历史故事融为一体</button>
+              <button class="choice" data-value="它能帮助我们理解开放包容的唐代文化">帮助理解开放包容的唐代文化</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">03 · 情境故事</div>
+            <h3>舞马为什么要“衔杯”</h3>
+          </div>
+        </div>
+
+        <div class="story-board">
+          <div class="story-scene">
+            <div class="story-video" id="storyVideo" data-scene="intro" aria-label="情境动画视频画面">
+              <video class="scene-player" id="scenePlayer" playsinline preload="auto"></video>
+              <div class="video-light left"></div>
+              <div class="video-light right"></div>
+              <div class="video-stage"></div>
+              <img class="archive-map" src="./assets/hejiacun-archaeology-map.png" alt="何家村唐代窖藏位置示意图">
+              <div class="shape-reference" aria-hidden="true">
+                <img class="pouch-photo" src="./assets/northern-leather-pouch.jpg" alt="">
+                <b>北方皮囊壶器型</b>
+                <span>对照扁圆壶身与顶部结构</span>
+              </div>
+              <div class="palace-curtain"></div>
+              <div class="palace-floor"></div>
+              <div class="palace-note note-one">乐</div>
+              <div class="palace-note note-two">舞</div>
+              <div class="palace-note note-three">寿</div>
+              <div class="cup-path"></div>
+              <div class="palace-cup"></div>
+              <img class="craft-demo" src="./assets/craft-process.gif" alt="传统金银工艺动图">
+              <div class="craft-artisan"></div>
+              <div class="craft-table"></div>
+              <div class="craft-anvil"></div>
+              <div class="craft-sheet-metal"></div>
+              <div class="craft-tool hammer"></div>
+              <div class="craft-hand left"></div>
+              <div class="craft-hand right"></div>
+              <div class="craft-fire"></div>
+              <div class="craft-brush"></div>
+              <span class="craft-spark spark-one"></span>
+              <span class="craft-spark spark-two"></span>
+              <span class="craft-spark spark-three"></span>
+              <img class="video-artifact" src="./assets/wuma-silver-pot.png" alt="情境动画中的银壶">
+              <img class="video-horse" src="./assets/horse-clear-source.png" alt="情境动画中的舞马纹样">
+              <img class="craft-sheet" src="./assets/wuma-silver-pot.png" alt="工艺动画中的银壶">
+              <div class="gilt-flash"></div>
+              <div class="process-track" aria-hidden="true">
+                <div class="process-step">捶揲</div>
+                <div class="process-step">模压</div>
+                <div class="process-step">焊接</div>
+                <div class="process-step">鎏金</div>
+              </div>
+            </div>
+            <div class="orbit-text"><span id="storyTag">何家村窖藏</span></div>
+            <img class="story-artifact" src="./assets/wuma-silver-pot.png" alt="银壶故事场景中的文物图">
+          </div>
+          <div class="timeline" id="timeline">
+            <button data-tag="何家村窖藏">
+              <span class="time">1970</span>
+              <span><b>何家村窖藏出土</b>大量唐代遗宝保存完好，揭示大唐的政治、经济、文化、风俗与技艺。</span>
+            </button>
+            <button data-tag="皮囊壶">
+              <span class="time">造型</span>
+              <span><b>借鉴北方民族器形</b>扁圆壶身模仿契丹族使用的皮囊壶，是文化交流融合的证据。</span>
+            </button>
+            <button data-tag="千秋节">
+              <span class="time">宫廷</span>
+              <span><b>千秋节祝寿</b>唐玄宗生日宴会上，舞马会伴随乐曲起舞，高潮时衔杯祝寿。</span>
+            </button>
+            <button data-tag="金银工艺">
+              <span class="time">工艺</span>
+              <span><b>捶揲与鎏金</b>银板捶打成形，纹样模压，再焊接打磨，金色舞马格外醒目。</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="challenge">
+        <div class="challenge">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">04 · 小组挑战</div>
+              <h3>把证据拖到正确的欣赏角度</h3>
+            </div>
+            <p class="section-desc">适合小组抢答或白板操作。拖对后会自动锁定，帮助学生区分“看到的事实”和“解释出的意义”。</p>
+          </div>
+
+          <div class="match-grid">
+            <div class="draggables" id="draggables">
+              <div class="drag-card" draggable="true" data-match="describe">壶身扁圆，马低头衔杯，银链连接壶盖与提梁</div>
+              <div class="drag-card" draggable="true" data-match="analyze">捶揲、模压、焊接、鎏金让银壶精致华丽</div>
+              <div class="drag-card" draggable="true" data-match="interpret">舞马衔杯与唐代宫廷祝寿表演有关</div>
+              <div class="drag-card" draggable="true" data-match="evaluate">它是理解唐代审美、工艺和文化交流的生动实物</div>
+            </div>
+            <div class="dropzones">
+              <div class="drop-zone" data-accept="describe"><b>描述</b><span>看到了什么？</span></div>
+              <div class="drop-zone" data-accept="analyze"><b>分析</b><span>有什么艺术特点？</span></div>
+              <div class="drop-zone" data-accept="interpret"><b>解释</b><span>表达了什么？</span></div>
+              <div class="drop-zone" data-accept="evaluate"><b>评价</b><span>有什么文化价值？</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="worksheet">
+        <div class="worksheet">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">05 · 探究学习单</div>
+              <h3>写出你的文物欣赏结论</h3>
+            </div>
+            <p class="section-desc">可以由学生独立填写，也可以先通过前面的互动自动带入关键词，再补充自己的表达。</p>
+          </div>
+
+          <div class="worksheet-grid">
+            <label class="note-cell">描述：我看到了什么
+              <textarea id="noteDescribe" placeholder="例：我看到壶身扁圆，壶腹有一匹金色的马低头衔杯……"></textarea>
+            </label>
+            <label class="note-cell">分析：有什么艺术特点
+              <textarea id="noteAnalyze" placeholder="例：银色壶身和金色纹样对比鲜明，舞马姿态很有动感……"></textarea>
+            </label>
+            <label class="note-cell">解释：它表达了什么
+              <textarea id="noteInterpret" placeholder="例：舞马衔杯可能与唐代宫廷祝寿活动有关……"></textarea>
+            </label>
+            <label class="note-cell">评价：有什么文化价值
+              <textarea id="noteEvaluate" placeholder="例：它帮助我们了解唐代生活、审美和工艺水平……"></textarea>
+            </label>
+          </div>
+
+          <div class="tool-row" style="margin-top: 16px;">
+            <button class="primary" id="buildConclusion" type="button">生成欣赏结论</button>
+            <button class="tool-btn" id="resetAll" type="button">重置课堂记录</button>
+          </div>
+
+          <div class="final-card">
+            <h4>我的一句话结论</h4>
+            <p>试着用“我发现……它体现了……所以我认为……”来表达。</p>
+            <div class="final-output" id="finalOutput">完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。</div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const facts = {
+      handle: {
+        title: "提梁与银链：能提、能连、也好看",
+        text: "壶肩焊接弓状提梁，壶盖上的银环套接银链与提梁相连。它既有实用结构，也让器物显得更精巧。",
+        prompt: "追问：如果没有这条链，使用和观赏会有什么不同？"
+      },
+      lid: {
+        title: "壶盖莲瓣：小部件也有工艺",
+        text: "壶盖帽为捶揲成型的覆式莲瓣，顶部铆有银环。细节处理体现唐代金银器的审美趣味。",
+        prompt: "追问：莲瓣形装饰让壶盖看起来更庄重，还是更活泼？说说理由。"
+      },
+      chain: {
+        title: "连接结构：从细节看技术",
+        text: "银链长约14厘米，连接壶盖与提梁。细小结构保存至今，提示我们观察文物不能只看最大、最亮的部分。",
+        prompt: "追问：这条链属于造型、工艺还是功能证据？"
+      },
+      shape: {
+        title: "皮囊式造型：文化交流藏在外形里",
+        text: "壶身呈扁圆形，模仿北方游牧民族契丹族使用的皮囊壶。这说明唐代器物会吸收不同民族的生活器形。",
+        prompt: "追问：为什么一个宫廷银壶会借鉴游牧民族的器形？"
+      },
+      horse: {
+        title: "鎏金舞马：纹样讲述宫廷故事",
+        text: "壶腹两面有相互对应的舞马，奋首鼓尾、衔杯匐拜。它联系到唐玄宗时期千秋节宴会中的舞马祝寿表演。",
+        prompt: "追问：马的动作为什么不是奔跑，而是衔杯、匐拜？"
+      },
+      craft: {
+        title: "捶揲、模压、焊接、鎏金：技术很硬",
+        text: "壶身由银板捶打出形，再模压出舞马纹样，最后黏压焊接并反复打磨，几乎看不出焊接痕迹。",
+        prompt: "追问：哪一种工艺最能体现工匠的技术难度？"
+      }
+    };
+
+    const collected = new Set();
+    const selections = {
+      describe: "",
+      analyze: "",
+      interpret: "",
+      evaluate: ""
+    };
+
+    const factCard = document.querySelector("#factCard");
+    const promptBox = document.querySelector("#promptBox");
+    const foundCount = document.querySelector("#foundCount");
+    const progressBar = document.querySelector("#progressBar");
+    const toast = document.querySelector("#toast");
+    const lens = document.querySelector("#lens");
+    const canvas = document.querySelector("#artifactCanvas");
+    const storyVideo = document.querySelector("#storyVideo");
+    const scenePlayer = document.querySelector("#scenePlayer");
+    let lensEnabled = false;
+    let toastTimer;
+    let activeSceneAudio = null;
+    const sceneVideos = {
+      palace: "./assets/videos/horse-cup-dance.mp4"
+    };
+    const horseNeighAudio = new Audio("./assets/audio/horse-neigh.mp3");
+    horseNeighAudio.preload = "auto";
+
+    const AudioFX = (() => {
+      let ctx;
+      let master;
+      let sfxGain;
+
+      function ensure() {
+        if (!ctx) {
+          ctx = new (window.AudioContext || window.webkitAudioContext)();
+          master = ctx.createGain();
+          sfxGain = ctx.createGain();
+          master.gain.value = .82;
+          sfxGain.gain.value = .42;
+          sfxGain.connect(master);
+          master.connect(ctx.destination);
+        }
+        if (ctx.state === "suspended") ctx.resume();
+        return ctx;
+      }
+
+      function tone(freq, start = 0, dur = .5, gain = .08, type = "sine", dest = sfxGain) {
+        const audioCtx = ensure();
+        const osc = audioCtx.createOscillator();
+        const amp = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        const now = audioCtx.currentTime + start;
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(1800, now);
+        amp.gain.setValueAtTime(0.0001, now);
+        amp.gain.exponentialRampToValueAtTime(Math.max(gain, .0002), now + .025);
+        amp.gain.exponentialRampToValueAtTime(.0001, now + dur);
+        osc.connect(filter);
+        filter.connect(amp);
+        amp.connect(dest);
+        osc.start(now);
+        osc.stop(now + dur + .04);
+      }
+
+      function noise(start = 0, dur = .18, gain = .05, lowpass = 1200) {
+        const audioCtx = ensure();
+        const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+        const src = audioCtx.createBufferSource();
+        const amp = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        const now = audioCtx.currentTime + start;
+        filter.type = "lowpass";
+        filter.frequency.value = lowpass;
+        amp.gain.setValueAtTime(gain, now);
+        amp.gain.exponentialRampToValueAtTime(.0001, now + dur);
+        src.buffer = buffer;
+        src.connect(filter);
+        filter.connect(amp);
+        amp.connect(sfxGain);
+        src.start(now);
+      }
+
+      function sfx(type) {
+        ensure();
+        if (type === "correct") {
+          tone(523, 0, .32, .08, "triangle");
+          tone(659, .11, .34, .08, "triangle");
+          tone(784, .22, .54, .09, "sine");
+          noise(.05, .12, .018, 3600);
+        } else if (type === "wrong") {
+          tone(220, 0, .35, .06, "sawtooth");
+          tone(165, .18, .42, .052, "sine");
+          noise(.02, .16, .025, 420);
+        } else if (type === "palace" || type === "scene") {
+          tone(392, 0, .72, .07, "triangle");
+          tone(588, .12, .66, .052, "sine");
+          tone(784, .32, .92, .035, "sine");
+        } else if (type === "craft") {
+          noise(0, .09, .06, 700);
+          tone(148, .02, .14, .06, "square");
+          tone(330, .18, .28, .035, "triangle");
+          noise(.24, .18, .045, 2600);
+        } else if (type === "horse") {
+          tone(700, 0, .32, .08, "sawtooth");
+          tone(480, .15, .38, .07, "triangle");
+          noise(.05, .44, .05, 1800);
+          noise(.48, .24, .05, 620);
+        } else if (type === "hotspot") {
+          tone(440, 0, .16, .05, "triangle");
+          tone(660, .08, .22, .035, "sine");
+        } else if (type === "select" || type === "pick") {
+          tone(330, 0, .12, .04, "square");
+        } else if (type === "complete") {
+          [392, 494, 587, 784].forEach((f, i) => tone(f, i * .09, .38, .06, "triangle"));
+        } else {
+          tone(300, 0, .14, .035, "triangle");
+        }
+      }
+
+      return {
+        unlock: ensure,
+        sfx
+      };
+    })();
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2100);
+    }
+
+    function playOneShot(type) {
+      AudioFX.sfx(type);
+    }
+
+    function playSceneAudio(scene) {
+      if (scene === "palace") {
+        horseNeighAudio.pause();
+        horseNeighAudio.currentTime = 0;
+        horseNeighAudio.play().catch(() => AudioFX.sfx("horse"));
+        return;
+      }
+      AudioFX.sfx(scene === "craft" ? "craft" : "scene");
+    }
+
+    function setStoryScene(scene, caption) {
+      if (!storyVideo) return;
+      storyVideo.dataset.scene = scene;
+      if (scenePlayer) {
+        const src = sceneVideos[scene];
+        if (src) {
+          if (!scenePlayer.src.endsWith(src.replace("./", ""))) {
+            scenePlayer.src = src;
+          }
+          scenePlayer.currentTime = 0;
+          scenePlayer.classList.add("is-playing");
+          const sceneAudioPlayed = scene === "palace";
+          if (sceneAudioPlayed) playSceneAudio(scene);
+          scenePlayer.play().catch(() => {
+            if (!sceneAudioPlayed) playSceneAudio(scene);
+          });
+        } else {
+          scenePlayer.pause();
+          scenePlayer.removeAttribute("src");
+          scenePlayer.load();
+          scenePlayer.classList.remove("is-playing");
+          playSceneAudio(scene);
+        }
+      } else {
+        playSceneAudio(scene);
+      }
+    }
+
+    document.body.addEventListener("pointerdown", () => AudioFX.unlock(), { once: true });
+
+    function updateProgress() {
+      foundCount.textContent = collected.size;
+      progressBar.style.width = `${(collected.size / 6) * 100}%`;
+      if (collected.size === 6) {
+        showToast("六条证据已集齐，可以生成完整欣赏结论了。");
+        burstConfetti();
+      }
+    }
+
+    function setFact(id) {
+      const item = facts[id];
+      document.querySelectorAll(".hotspot").forEach(btn => btn.classList.toggle("active", btn.dataset.id === id));
+      document.querySelector(`.hotspot[data-id="${id}"]`).classList.add("seen");
+      factCard.innerHTML = `<h4>${item.title}</h4><p>${item.text}</p>`;
+      promptBox.innerHTML = `<b>观察提示：</b>${item.prompt}`;
+      document.querySelector(`.clue[data-clue="${id}"]`)?.classList.add("revealed");
+      const before = collected.size;
+      collected.add(id);
+      updateProgress();
+      playOneShot("hotspot");
+      if (collected.size > before) showToast("证据已收入学习单。");
+    }
+
+    document.querySelectorAll(".hotspot").forEach(btn => {
+      btn.addEventListener("click", () => setFact(btn.dataset.id));
+    });
+
+    document.querySelectorAll("[data-scroll]").forEach(btn => {
+      btn.addEventListener("click", () => document.querySelector(btn.dataset.scroll).scrollIntoView({ behavior: "smooth" }));
+    });
+
+    document.querySelector("#lensToggle").addEventListener("click", (event) => {
+      lensEnabled = !lensEnabled;
+      event.currentTarget.textContent = lensEnabled ? "关闭放大镜" : "开启放大镜";
+      playOneShot("select");
+      showToast(lensEnabled ? "移动鼠标或手指，观察纹样细节。" : "放大镜已关闭。");
+      if (!lensEnabled) lens.classList.remove("on");
+    });
+
+    canvas.addEventListener("pointermove", event => {
+      if (!lensEnabled) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      lens.style.left = `${x}px`;
+      lens.style.top = `${y}px`;
+      const px = Math.max(0, Math.min(1, x / rect.width));
+      const py = Math.max(0, Math.min(1, y / rect.height));
+      lens.style.backgroundPosition = `${px * 100}% ${py * 100}%`;
+      lens.classList.add("on");
+    });
+
+    canvas.addEventListener("pointerleave", () => lens.classList.remove("on"));
+
+    document.querySelectorAll(".choice-list").forEach(group => {
+      group.addEventListener("click", event => {
+        const choice = event.target.closest(".choice");
+        if (!choice) return;
+        group.querySelectorAll(".choice").forEach(btn => btn.classList.remove("selected"));
+        choice.classList.add("selected");
+        selections[group.dataset.step] = choice.dataset.value;
+        playOneShot("select");
+        const textareas = {
+          describe: "#noteDescribe",
+          analyze: "#noteAnalyze",
+          interpret: "#noteInterpret",
+          evaluate: "#noteEvaluate"
+        };
+        const target = document.querySelector(textareas[group.dataset.step]);
+        if (target && !target.value.trim()) target.value = choice.dataset.value;
+        showToast("已记录一个欣赏关键词。");
+      });
+    });
+
+    document.querySelector("#autoFill").addEventListener("click", () => {
+      const values = Array.from(collected).map(id => facts[id].text);
+      document.querySelector("#noteDescribe").value ||= "我看到银壶呈扁圆形，有弓形提梁、银链和金色舞马纹样。";
+      document.querySelector("#noteAnalyze").value ||= "它把皮囊式造型、舞马纹样和捶揲、模压、焊接、鎏金等工艺结合起来。";
+      document.querySelector("#noteInterpret").value ||= "舞马衔杯纹样与唐代宫廷千秋节祝寿表演有关，皮囊造型体现民族文化交流。";
+      document.querySelector("#noteEvaluate").value ||= "它是认识唐代生活、审美趣味、民族交流和金银器技术水平的重要实物证据。";
+      showToast(values.length ? "已把采集到的证据带入学习单。" : "先点击文物热点，学习单会更有证据。");
+    });
+
+    document.querySelector("#timeline").addEventListener("click", event => {
+      const btn = event.target.closest("button");
+      if (!btn) return;
+      document.querySelectorAll("#timeline button").forEach(item => item.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelector("#storyTag").textContent = btn.dataset.tag;
+      const index = Array.from(btn.parentElement.children).indexOf(btn);
+      const scenes = [
+        {id: "archive", caption: "何家村窖藏：文物从历史中被发现"},
+        {id: "shape", caption: "皮囊式造型：旋转观察文化交流的外形证据"},
+        {id: "palace", caption: "情境动画：舞马伴随乐曲起舞，衔杯祝寿"},
+        {id: "craft", caption: "工艺动画：捶揲、模压、焊接、鎏金四步工艺"}
+      ];
+      const scene = scenes[index] || scenes[0];
+      setStoryScene(scene.id, scene.caption);
+    });
+
+    let dragged = null;
+    document.querySelectorAll(".drag-card").forEach(card => {
+      card.addEventListener("dragstart", event => {
+        dragged = card;
+        playOneShot("pick");
+        event.dataTransfer.setData("text/plain", card.dataset.match);
+      });
+    });
+
+    document.querySelectorAll(".drop-zone").forEach(zone => {
+      zone.addEventListener("dragover", event => {
+        event.preventDefault();
+        zone.classList.add("over");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("over");
+        const match = event.dataTransfer.getData("text/plain");
+        if (zone.dataset.accept === match && dragged) {
+          zone.classList.add("correct");
+          zone.appendChild(dragged);
+          dragged.classList.add("matched");
+          dragged.setAttribute("draggable", "false");
+          playOneShot("correct");
+          showToast("恭喜你，回答对了");
+          if (document.querySelectorAll(".drag-card.matched").length === 4) burstConfetti();
+        } else {
+          playOneShot("wrong");
+          showToast("回答不对，请再想想噢");
+        }
+      });
+    });
+
+    document.querySelector("#buildConclusion").addEventListener("click", () => {
+      const describe = document.querySelector("#noteDescribe").value.trim() || selections.describe || "我看到它有皮囊式壶身和鎏金舞马纹样";
+      const analyze = document.querySelector("#noteAnalyze").value.trim() || selections.analyze || "造型、纹样和金银器工艺结合精巧";
+      const interpret = document.querySelector("#noteInterpret").value.trim() || selections.interpret || "它联系到唐代宫廷舞马祝寿和民族文化交流";
+      const evaluate = document.querySelector("#noteEvaluate").value.trim() || selections.evaluate || "它是理解唐代文化的重要实物证据";
+      document.querySelector("#finalOutput").textContent = `我发现：${describe}。从艺术特点看，${analyze}。它表达了：${interpret}。所以我认为，${evaluate}。`;
+      playOneShot("complete");
+      showToast("欣赏结论已生成，可以请小组代表朗读。");
+      burstConfetti();
+    });
+
+    document.querySelector("#resetAll").addEventListener("click", () => {
+      collected.clear();
+      updateProgress();
+      document.querySelectorAll(".seen,.active,.revealed,.selected,.correct,.matched").forEach(el => {
+        el.classList.remove("seen", "active", "revealed", "selected", "correct", "matched");
+      });
+      document.querySelectorAll("textarea").forEach(area => area.value = "");
+      document.querySelector("#finalOutput").textContent = "完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。";
+      factCard.innerHTML = "<h4>先点一点银壶</h4><p>从你最感兴趣的部位开始：它的形状像什么？马为什么是金色？链子和提梁有什么用？</p>";
+      promptBox.innerHTML = "<b>观察提示：</b>先说事实，再说推测。例如：“我看到马低头衔杯，所以我推测它和宴会祝寿有关。”";
+      playOneShot("select");
+      showToast("课堂记录已重置。");
+    });
+
+    function burstConfetti() {
+      const colors = ["#d7a038", "#18a981", "#b74e2b", "#c9d1cd"];
+      for (let i = 0; i < 22; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * .18}s`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 1700);
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from "./assets/vendor/three.module.min.js";
+    import { OrbitControls } from "./assets/vendor/OrbitControls.js";
+    import { GLTFLoader } from "./assets/vendor/GLTFLoader.js";
+
+    const canvas3d = document.querySelector("#artifact3d");
+    const stage = document.querySelector("#artifactCanvas");
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas3d,
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+    camera.position.set(0, 0.22, 6.2);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = 4.2;
+    controls.maxDistance = 8.2;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.85;
+    controls.target.set(0, 0.05, 0);
+
+    const model = new THREE.Group();
+    scene.add(model);
+
+    scene.add(new THREE.HemisphereLight(0xfff6e0, 0x24443c, 2.1));
+
+    const keyLight = new THREE.DirectionalLight(0xfff1c9, 3.1);
+    keyLight.position.set(3.4, 4.6, 5.2);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0x9ee7d2, 1.4);
+    rimLight.position.set(-4.4, 2.5, -3.4);
+    scene.add(rimLight);
+
+    function makeNoiseTexture() {
+      const size = 256;
+      const c = document.createElement("canvas");
+      c.width = size;
+      c.height = size;
+      const ctx = c.getContext("2d");
+      const img = ctx.createImageData(size, size);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const grain = 120 + Math.random() * 68;
+        img.data[i] = grain;
+        img.data[i + 1] = grain + Math.random() * 8;
+        img.data[i + 2] = grain - Math.random() * 10;
+        img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      ctx.globalAlpha = .14;
+      for (let y = 0; y < size; y += 11) {
+        ctx.fillStyle = y % 22 === 0 ? "#ffffff" : "#26312e";
+        ctx.fillRect(0, y, size, 1);
+      }
+      const texture = new THREE.CanvasTexture(c);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(1.2, 1.6);
+      return texture;
+    }
+
+    const silver = new THREE.MeshPhysicalMaterial({
+      color: 0xb9beb7,
+      metalness: 1,
+      roughness: .38,
+      clearcoat: .28,
+      clearcoatRoughness: .34,
+      map: makeNoiseTexture()
+    });
+
+    const darkSilver = new THREE.MeshPhysicalMaterial({
+      color: 0x565b57,
+      metalness: 1,
+      roughness: .48,
+      clearcoat: .18
+    });
+
+    const gold = new THREE.MeshPhysicalMaterial({
+      color: 0xd7a038,
+      metalness: 1,
+      roughness: .25,
+      clearcoat: .45,
+      clearcoatRoughness: .22
+    });
+
+    const shadowGold = new THREE.MeshPhysicalMaterial({
+      color: 0xa56f1e,
+      metalness: .85,
+      roughness: .34
+    });
+
+    function addMesh(geometry, material, position, scale, rotation) {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(...position);
+      mesh.scale.set(...scale);
+      if (rotation) mesh.rotation.set(...rotation);
+      model.add(mesh);
+      return mesh;
+    }
+
+    function fitLoadedModel(root) {
+      const box = new THREE.Box3().setFromObject(root);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+      root.position.sub(center);
+      root.scale.multiplyScalar(3.45 / maxAxis);
+      root.rotation.y = Math.PI;
+      model.add(root);
+      const fittedBox = new THREE.Box3().setFromObject(root);
+      const fittedCenter = fittedBox.getCenter(new THREE.Vector3());
+      controls.target.copy(fittedCenter);
+      controls.target.y += 0.08;
+      controls.update();
+      stage?.classList.add("hunyuan-loaded");
+      window.showToast?.("混元3D模型已加载，可拖拽旋转观察。");
+    }
+
+    function enhanceLoadedMaterials(root) {
+      root.traverse((node) => {
+        if (!node.isMesh) return;
+        node.castShadow = true;
+        node.receiveShadow = true;
+        if (!node.material) return;
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        materials.forEach((mat) => {
+          if ("metalness" in mat) mat.metalness = Math.max(mat.metalness ?? 0, 0.65);
+          if ("roughness" in mat) mat.roughness = Math.min(mat.roughness ?? 0.55, 0.52);
+          mat.needsUpdate = true;
+        });
+      });
+    }
+
+    function loadHunyuanModel() {
+      const loader = new GLTFLoader();
+      loader.load(
+        "./assets/wuma-hunyuan-model.glb",
+        (gltf) => {
+          enhanceLoadedMaterials(gltf.scene);
+          model.clear();
+          fitLoadedModel(gltf.scene);
+        },
+        undefined,
+        (error) => {
+          console.warn("Hunyuan model failed to load; using fallback teaching model.", error);
+          window.showToast?.("混元模型加载失败，已显示备用教学模型。");
+        }
+      );
+    }
+
+    const bodyProfile = [
+      [0.16, -1.52], [0.52, -1.46], [0.92, -1.32], [1.18, -1.02],
+      [1.31, -0.48], [1.23, 0.16], [1.04, 0.58], [0.76, 0.86],
+      [0.52, 1.02], [0.35, 1.08], [0.24, 1.12]
+    ].map(([x, y]) => new THREE.Vector2(x, y));
+
+    const body = addMesh(
+      new THREE.LatheGeometry(bodyProfile, 96),
+      silver,
+      [0, -0.12, 0],
+      [1, 1, .34],
+      [0, 0, 0]
+    );
+
+    addMesh(new THREE.CylinderGeometry(.62, .76, .16, 96), darkSilver, [0, -1.6, 0], [1, 1, .34], [0, 0, 0]);
+    addMesh(new THREE.TorusGeometry(.72, .035, 12, 120), gold, [0, -1.42, .18], [1, .18, .08], [0, 0, 0]);
+
+    for (let i = 0; i < 18; i += 1) {
+      const x = -0.82 + i * .096;
+      addMesh(new THREE.SphereGeometry(.025, 12, 8), shadowGold, [x, -1.42 + Math.sin(i * .9) * .018, .32], [1, 1, 1], [0, 0, 0]);
+    }
+
+    addMesh(new THREE.CylinderGeometry(.23, .28, .36, 48), silver, [.9, .94, 0], [.8, 1, .55], [0, 0, -.16]);
+    addMesh(new THREE.ConeGeometry(.32, .36, 48), gold, [.97, 1.2, 0], [.82, 1, .55], [0, 0, -.16]);
+    addMesh(new THREE.SphereGeometry(.055, 20, 16), gold, [1.03, 1.43, .02], [1, 1, 1], [0, 0, 0]);
+
+    const handleCurve = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-.86, 1.03, 0),
+      new THREE.Vector3(-.62, 2.33, .03),
+      new THREE.Vector3(.58, 2.33, .03),
+      new THREE.Vector3(.88, 1.04, 0)
+    );
+    addMesh(new THREE.TubeGeometry(handleCurve, 70, .035, 16, false), gold, [0, 0, 0], [1, 1, .65], [0, 0, 0]);
+    addMesh(new THREE.CylinderGeometry(.08, .1, .38, 24), gold, [-.86, .91, 0], [1, 1, .6], [0, 0, 0]);
+    addMesh(new THREE.CylinderGeometry(.08, .1, .38, 24), gold, [.88, .91, 0], [1, 1, .6], [0, 0, 0]);
+
+    const chainStart = new THREE.Vector3(.98, 1.28, .28);
+    const chainEnd = new THREE.Vector3(.48, .24, .34);
+    for (let i = 0; i < 12; i += 1) {
+      const t = i / 11;
+      const pos = chainStart.clone().lerp(chainEnd, t);
+      pos.y += Math.sin(t * Math.PI) * -.18;
+      const ring = addMesh(new THREE.TorusGeometry(.052, .011, 8, 18), darkSilver, [pos.x, pos.y, pos.z], [1, 1, 1], [Math.PI / 2, 0, i % 2 ? .8 : -.8]);
+      ring.material = darkSilver;
+    }
+
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load("./assets/horse-decal.png", (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const decal = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.45, .9),
+        new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          depthWrite: false,
+          side: THREE.DoubleSide
+        })
+      );
+      decal.position.set(.05, -.28, .475);
+      decal.rotation.set(0, 0, -.02);
+      model.add(decal);
+
+      const backDecal = decal.clone();
+      backDecal.position.z = -.475;
+      backDecal.rotation.set(0, Math.PI, .02);
+      model.add(backDecal);
+    });
+
+    const labelCanvas = document.createElement("canvas");
+    labelCanvas.width = 512;
+    labelCanvas.height = 96;
+    const labelCtx = labelCanvas.getContext("2d");
+    labelCtx.fillStyle = "rgba(7,59,50,.72)";
+    labelCtx.fillRect(0, 0, 512, 96);
+    labelCtx.strokeStyle = "rgba(242,207,116,.9)";
+    labelCtx.lineWidth = 5;
+    labelCtx.strokeRect(8, 8, 496, 80);
+    labelCtx.fillStyle = "#fffaf0";
+    labelCtx.font = "700 32px PuHui, Microsoft YaHei";
+    labelCtx.textAlign = "center";
+    labelCtx.fillText("3D教学重构模型", 256, 58);
+    const labelTexture = new THREE.CanvasTexture(labelCanvas);
+    labelTexture.colorSpace = THREE.SRGBColorSpace;
+    const label = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.34, .25),
+      new THREE.MeshBasicMaterial({ map: labelTexture, transparent: true })
+    );
+    label.position.set(0, -1.92, .52);
+    model.add(label);
+
+    loadHunyuanModel();
+
+    const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(1.8, 96),
+      new THREE.MeshBasicMaterial({ color: 0x073b32, transparent: true, opacity: .12 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -1.72;
+    scene.add(floor);
+
+    function resize3d() {
+      const rect = canvas3d.parentElement.getBoundingClientRect();
+      const width = Math.max(320, rect.width);
+      const height = Math.max(320, rect.height);
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
+
+    function setView(view) {
+      controls.autoRotate = view === "spin" ? !controls.autoRotate : false;
+      const positions = {
+        front: [0, .2, 6.2],
+        side: [5.5, .28, .1],
+        top: [0, 6.4, .5]
+      };
+      if (positions[view]) {
+        camera.position.set(...positions[view]);
+        controls.target.set(0, 0.02, 0);
+        controls.update();
+      }
+      window.showToast?.(view === "spin" && controls.autoRotate ? "自动旋转已开启。" : view === "spin" ? "自动旋转已暂停。" : "视角已切换，可继续拖拽观察。");
+    }
+
+    document.querySelectorAll("[data-view]").forEach(button => {
+      button.addEventListener("click", () => setView(button.dataset.view));
+    });
+
+    stage.addEventListener("pointerdown", () => {
+      controls.autoRotate = false;
+    });
+
+    window.addEventListener("resize", resize3d);
+    resize3d();
+
+    function animate() {
+      controls.update();
+      model.rotation.y += controls.autoRotate ? 0 : 0;
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
