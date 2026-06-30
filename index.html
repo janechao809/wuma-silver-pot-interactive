@@ -525,15 +525,73 @@
       border-radius: 12px;
     }
 
-    .artifact-reference {
-      opacity: 0;
+    .artifact-wrap.model-mode .artifact-reference {
+      position: absolute;
+      left: 50%;
+      bottom: 58px;
+      z-index: 3;
+      width: min(72%, 410px);
+      height: auto;
+      opacity: .96;
       pointer-events: none;
+      visibility: visible;
+      filter: drop-shadow(0 28px 32px rgba(7, 59, 50, .22));
+      transform: translateX(-50%);
+      animation: modelPosterSway 4.8s ease-in-out infinite;
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    .artifact-canvas.hunyuan-loaded .artifact-wrap.model-mode .artifact-reference {
+      opacity: 0;
       visibility: hidden;
     }
 
     .artifact-wrap.model-mode.is-interacting .artifact-reference,
     .artifact-wrap.model-mode.is-fixed-view .artifact-reference {
       animation: none;
+    }
+
+    .model-loading-status {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      z-index: 34;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100% - 210px);
+      padding: 9px 12px;
+      border-radius: 999px;
+      color: var(--deep);
+      background: rgba(255, 250, 240, .9);
+      border: 1px solid rgba(7, 59, 50, .16);
+      box-shadow: 0 14px 28px rgba(7, 59, 50, .12);
+      font-size: 13px;
+      font-weight: 800;
+      pointer-events: none;
+      transition: opacity .35s ease, transform .35s ease, visibility .35s ease;
+    }
+
+    .model-loading-status::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--jade-2);
+      box-shadow: 0 0 0 6px rgba(24, 169, 129, .14);
+      animation: pulseGlow 1.4s ease-in-out infinite;
+      flex: 0 0 auto;
+    }
+
+    .artifact-canvas.hunyuan-loaded .model-loading-status {
+      opacity: 0;
+      transform: translateY(-8px);
+      visibility: hidden;
+    }
+
+    .artifact-canvas:not(.hunyuan-loaded) .hotspot {
+      opacity: .5;
+      pointer-events: none;
     }
 
     .model-hint {
@@ -1913,6 +1971,11 @@
       50% { transform: translateX(-50%) scale(1.035); }
     }
 
+    @keyframes modelPosterSway {
+      0%, 100% { transform: translateX(-50%) rotateY(-4deg) rotateZ(-.6deg) scale(1); }
+      50% { transform: translateX(-50%) rotateY(4deg) rotateZ(.6deg) scale(1.025); }
+    }
+
     @keyframes introPotSway {
       0%, 100% { transform: translateX(-50%) rotate(-2.4deg) scale(1); }
       50% { transform: translateX(-50%) rotate(2.4deg) scale(1.025); }
@@ -2197,6 +2260,7 @@
                 <button class="hotspot hs-horse" data-id="horse" data-label="鎏金舞马" aria-label="查看鎏金舞马"></button>
                 <button class="hotspot hs-craft" data-id="craft" data-label="捶揲模压" aria-label="查看捶揲模压"></button>
               </div>
+              <div class="model-loading-status" id="modelLoadingStatus">3D模型加载中</div>
               <div class="view-controls" aria-label="3D观察视角">
                 <button type="button" data-view="front">正面</button>
                 <button type="button" data-view="side">侧面</button>
@@ -3011,6 +3075,7 @@
     const canvas3d = document.querySelector("#artifact3d");
     const stage3d = document.querySelector("#artifactCanvas");
     const wrap3d = document.querySelector(".artifact-wrap.model-mode");
+    const modelLoadingStatus = document.querySelector("#modelLoadingStatus");
     const renderer3d = new THREE.WebGLRenderer({
       canvas: canvas3d,
       antialias: true,
@@ -3112,21 +3177,33 @@
       controls3d.target.y += .04;
       controls3d.update();
       stage3d?.classList.add("hunyuan-loaded");
+      if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型已加载";
       updateHotspots3d();
       window.showToast?.("混元3D模型已加载，可自由拖拽观察。");
     }
 
     function loadModel3d() {
       const loader = new GLTFLoader();
+      if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型加载中";
       loader.load(
-        "./assets/wuma-hunyuan-model.glb",
+        "./assets/wuma-hunyuan-model-web.glb",
         (gltf) => {
           enhanceMaterials3d(gltf.scene);
           fitModel3d(gltf.scene);
         },
-        undefined,
+        (event) => {
+          if (!modelLoadingStatus) return;
+          if (event.lengthComputable && event.total > 0) {
+            const progress = Math.min(99, Math.round((event.loaded / event.total) * 100));
+            modelLoadingStatus.textContent = `3D模型加载中 ${progress}%`;
+          } else if (event.loaded > 0) {
+            const loadedMb = (event.loaded / 1024 / 1024).toFixed(1);
+            modelLoadingStatus.textContent = `3D模型加载中 ${loadedMb}MB`;
+          }
+        },
         (error) => {
           console.warn("Hunyuan model failed to load.", error);
+          if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型加载失败，请刷新重试";
           window.showToast?.("混元3D模型加载失败，请检查模型文件。");
         }
       );
