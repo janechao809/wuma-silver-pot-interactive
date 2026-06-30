@@ -76,6 +76,15 @@
       cursor: pointer;
     }
 
+    button:not(.hotspot),
+    .nav a,
+    .drag-card {
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      will-change: transform, box-shadow;
+    }
+
     .app {
       position: relative;
       z-index: 1;
@@ -119,9 +128,24 @@
     }
 
     .brand h1 {
+      position: relative;
       margin: 0;
       font-size: clamp(18px, 2.5vw, 28px);
       line-height: 1.15;
+      color: var(--deep);
+      overflow: hidden;
+    }
+
+    .brand h1::after,
+    .section h3::after {
+      content: "";
+      position: absolute;
+      inset: -18% -28%;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 0 38%, rgba(255, 246, 210, .92) 48%, rgba(242, 207, 116, .66) 52%, transparent 64%);
+      transform: translateX(-86%) skewX(-12deg);
+      mix-blend-mode: screen;
+      animation: titleSheen 7.2s cubic-bezier(.2, .7, .2, 1) infinite;
     }
 
     .brand p {
@@ -154,6 +178,18 @@
       transform: translateY(-2px);
       background: #fffaf0;
       border-color: rgba(7, 59, 50, .42);
+      box-shadow: 0 14px 28px rgba(7, 59, 50, .12);
+    }
+
+    .motion-ripple {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,.78), rgba(242,207,116,.44) 46%, transparent 70%);
+      transform: translate(-50%, -50%) scale(0);
+      animation: rippleBurst .66s ease-out forwards;
     }
 
     .hero {
@@ -193,6 +229,7 @@
     }
 
     .hero h2 {
+      position: relative;
       margin: 0;
       max-width: 780px;
       font-size: clamp(38px, 7vw, 84px);
@@ -204,9 +241,11 @@
     .hero h2 span {
       display: block;
       color: transparent;
-      background: linear-gradient(90deg, #8b6824, #d7a038 45%, #78551e);
+      background: linear-gradient(90deg, #8b6824, #d7a038 32%, #fff1a8 48%, #d7a038 62%, #78551e);
+      background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
+      animation: titleGoldFlow 8s ease-in-out infinite;
     }
 
     .hero-lead {
@@ -318,7 +357,8 @@
 
     .primary:hover,
     .secondary:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 20px 38px rgba(7, 59, 50, .14), 0 12px 24px rgba(215, 160, 56, .24);
     }
 
     .section {
@@ -341,6 +381,9 @@
     }
 
     .section h3 {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
       margin: 7px 0 0;
       color: var(--deep);
       font-size: clamp(28px, 4vw, 48px);
@@ -444,6 +487,17 @@
       filter: blur(18px);
     }
 
+    .artifact-canvas::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background: linear-gradient(118deg, transparent 0 38%, rgba(255, 250, 240, .38) 48%, transparent 60%);
+      transform: translateX(-120%);
+      animation: panelSheen 9s ease-in-out infinite;
+    }
+
     .artifact-wrap {
       position: relative;
       width: min(78%, 540px);
@@ -528,8 +582,9 @@
     }
 
     .view-controls button:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px) scale(1.03);
       background: #fffaf0;
+      box-shadow: 0 16px 28px rgba(7, 59, 50, .16);
     }
 
     .artifact-wrap:not(.model-mode) img {
@@ -679,6 +734,29 @@
         linear-gradient(135deg, rgba(7,59,50,.96), rgba(15,122,99,.9)),
         radial-gradient(circle at 90% 0, rgba(215,160,56,.3), transparent 34%);
       overflow: hidden;
+    }
+
+    .fact-card,
+    .step-card,
+    .mission-card,
+    .clue,
+    .story-video,
+    .timeline button,
+    .drop-zone,
+    .note-panel {
+      transition: transform .32s cubic-bezier(.2, .8, .2, 1), box-shadow .32s ease, border-color .32s ease, background .32s ease, opacity .25s ease;
+    }
+
+    .fact-card:hover,
+    .step-card:hover,
+    .mission-card:hover,
+    .clue:hover,
+    .timeline button:hover,
+    .drop-zone:hover,
+    .note-panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 42px rgba(7, 59, 50, .12);
+      border-color: rgba(24, 169, 129, .28);
     }
 
     .fact-card::after {
@@ -837,8 +915,9 @@
     }
 
     .choice:hover {
-      transform: translateX(4px);
+      transform: translateX(6px) translateY(-1px);
       border-color: rgba(7, 59, 50, .36);
+      box-shadow: 0 14px 28px rgba(7, 59, 50, .08);
     }
 
     .choice.selected {
@@ -1562,8 +1641,9 @@
 
     .timeline button:hover,
     .timeline button.active {
-      transform: translateX(6px);
+      transform: translateX(8px) translateY(-2px);
       background: rgba(236,247,238,.95);
+      box-shadow: 0 16px 34px rgba(7, 59, 50, .1);
     }
 
     .time {
@@ -1622,13 +1702,27 @@
     }
 
     .drag-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(7,59,50,.12);
+      transform: translateX(6px) translateY(-3px);
+      box-shadow: 0 18px 34px rgba(7,59,50,.14);
     }
 
     .drag-card.matched {
       opacity: .36;
       cursor: default;
+    }
+
+    .motion-reveal {
+      opacity: 0;
+      transform: translateY(22px) scale(.985);
+      filter: blur(5px);
+      transition: opacity .72s ease, transform .72s cubic-bezier(.2, .8, .2, 1), filter .72s ease;
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .motion-reveal.in-view {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
     }
 
     .drop-zone {
@@ -1757,6 +1851,30 @@
       background: var(--gold);
       animation: fall 1.4s linear forwards;
       pointer-events: none;
+    }
+
+    @keyframes titleSheen {
+      0%, 18% { transform: translateX(-92%) skewX(-12deg); opacity: 0; }
+      32% { opacity: .88; }
+      48%, 100% { transform: translateX(92%) skewX(-12deg); opacity: 0; }
+    }
+
+    @keyframes titleGoldFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes panelSheen {
+      0%, 28% { transform: translateX(-120%); opacity: 0; }
+      42% { opacity: .78; }
+      62%, 100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes rippleBurst {
+      to {
+        transform: translate(-50%, -50%) scale(18);
+        opacity: 0;
+      }
     }
 
     @keyframes revealFloat {
@@ -1927,6 +2045,23 @@
       to {
         transform: translateY(110vh) rotate(560deg);
         opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+
+      .motion-reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
       }
     }
 
@@ -2306,6 +2441,41 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <script>
+    (() => {
+      const revealTargets = document.querySelectorAll(
+        ".hero-copy, .hero-panel, .mission-card, .section-head, .artifact-stage, .evidence-panel, .step-card, .story-video, .timeline button, .challenge, .note-panel"
+      );
+
+      revealTargets.forEach((el, index) => {
+        el.classList.add("motion-reveal");
+        el.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 55}ms`);
+      });
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in-view");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: .14, rootMargin: "0px 0px -8% 0px" });
+
+      revealTargets.forEach(el => revealObserver.observe(el));
+
+      document.querySelectorAll("button:not(.hotspot), .nav a").forEach(target => {
+        target.addEventListener("pointerdown", event => {
+          const rect = target.getBoundingClientRect();
+          const ripple = document.createElement("span");
+          ripple.className = "motion-ripple";
+          ripple.style.left = `${event.clientX - rect.left}px`;
+          ripple.style.top = `${event.clientY - rect.top}px`;
+          target.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 700);
+        });
+      });
+    })();
+  </script>
 
   <script>
     const facts = {
