@@ -590,8 +590,8 @@
     }
 
     .artifact-canvas:not(.hunyuan-loaded) .hotspot {
-      opacity: .5;
-      pointer-events: none;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .model-hint {
@@ -728,12 +728,12 @@
       box-shadow: 0 8px 18px rgba(7, 59, 50, .2), 0 0 0 8px rgba(24, 169, 129, .18);
     }
 
-    .hs-handle { left: 46%; top: 18%; }
-    .hs-lid { left: 66%; top: 28%; }
+    .hs-handle { left: 50%; top: 26%; }
+    .hs-lid { left: 27%; top: 35%; }
     .hs-chain { left: 68%; top: 41%; }
-    .hs-shape { left: 25%; top: 56%; }
+    .hs-shape { left: 30%; top: 62%; }
     .hs-horse { left: 52%; top: 57%; }
-    .hs-craft { left: 56%; top: 80%; }
+    .hs-craft { left: 56%; top: 76%; }
 
     .lens {
       position: absolute;
@@ -1695,6 +1695,14 @@
 
     .story-video[data-scene="craft"] .craft-demo {
       display: block;
+      left: 4%;
+      right: 4%;
+      width: 92%;
+      height: calc(100% - 132px);
+      object-fit: cover;
+      object-position: center center;
+      transform: scale(1.08);
+      transform-origin: center center;
     }
 
     .orbit-text {
@@ -2453,7 +2461,7 @@
         <div class="story-board">
           <div class="story-scene">
             <div class="story-video" id="storyVideo" data-scene="intro" aria-label="情境动画视频画面">
-              <video class="scene-player" id="scenePlayer" src="./assets/videos/qianqiu-mobile-blessing.mp4" playsinline preload="auto" loop></video>
+              <video class="scene-player" id="scenePlayer" playsinline preload="none" loop></video>
               <div class="video-light left"></div>
               <div class="video-light right"></div>
               <div class="video-stage"></div>
@@ -2815,7 +2823,15 @@
 
     function warmMobileAudio() {
       AudioFX.prime();
-      if (scenePlayer && scenePlayer.readyState < 2) scenePlayer.load();
+    }
+
+    let palaceVideoPrimed = false;
+
+    function primePalaceVideo() {
+      if (!scenePlayer || palaceVideoPrimed) return;
+      palaceVideoPrimed = true;
+      if (!scenePlayer.src) scenePlayer.src = sceneVideos.palace;
+      scenePlayer.load();
     }
 
     function pausePalaceVideo() {
@@ -2866,7 +2882,16 @@
       scenePlayer.loop = true;
       scenePlayer.muted = false;
       scenePlayer.volume = 1;
-      scenePlayer.load();
+    }
+
+    if ("IntersectionObserver" in window && storyVideo) {
+      const storyMediaObserver = new IntersectionObserver((entries) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          primePalaceVideo();
+          storyMediaObserver.disconnect();
+        }
+      }, { rootMargin: "260px 0px" });
+      storyMediaObserver.observe(storyVideo);
     }
 
     document.addEventListener("pointerdown", (event) => {
@@ -2876,6 +2901,7 @@
       if (storyVideo?.dataset.scene === "palace" && !target.matches('#timeline button[data-tag="千秋节"]')) {
         pausePalaceVideo();
       }
+      if (target.matches('#timeline button[data-tag="千秋节"]')) primePalaceVideo();
       if (target.matches(".hotspot")) {
         playOneShot("hotspot");
       } else if (target.matches(".choice, #lensToggle, #resetAll")) {
@@ -3268,12 +3294,110 @@
     };
     const projected3d = new THREE.Vector3();
     let loadedRoot3d = null;
+    let model3dLoadStarted = false;
     let modelBox3d = new THREE.Box3();
     let modelSize3d = new THREE.Vector3(1, 1, 1);
     let modelCenter3d = new THREE.Vector3();
+    const previewImage3d = document.querySelector(".artifact-reference");
+    const previewHotspotAnchors = {
+      handle: { x: .50, y: .16, depth: -.12 },
+      lid: { x: .17, y: .26, depth: .16 },
+      chain: { x: .74, y: .33, depth: .18 },
+      shape: { x: .22, y: .61, depth: -.14 },
+      horse: { x: .53, y: .58, depth: .1 },
+      craft: { x: .58, y: .80, depth: .06 }
+    };
+    let previewRotateX = 0;
+    let previewRotateY = 0;
+    let previewScale = 1;
+    let previewAutoSpin = false;
+    let previewDragging = false;
+    let previewLastX = 0;
+    let previewLastY = 0;
 
     function clamp3d(value, min, max) {
       return Math.max(min, Math.min(max, value));
+    }
+
+    function updatePreviewHotspots3d() {
+      if (loadedRoot3d || !wrap3d || !previewImage3d) return;
+      const imageRect = previewImage3d.getBoundingClientRect();
+      const wrapRect = wrap3d.getBoundingClientRect();
+      if (!imageRect.width || !imageRect.height) return;
+      document.querySelectorAll(".hotspot").forEach((button) => {
+        const anchor = previewHotspotAnchors[button.dataset.id];
+        if (!anchor) return;
+        const depthShift = previewRotateY * (anchor.depth || 0);
+        const tiltShift = previewRotateX * (anchor.y - .5) * .28;
+        button.style.left = `${imageRect.left - wrapRect.left + imageRect.width * anchor.x + depthShift}px`;
+        button.style.top = `${imageRect.top - wrapRect.top + imageRect.height * anchor.y + tiltShift}px`;
+        button.style.opacity = "1";
+      });
+    }
+
+    function renderPreview3d() {
+      if (!wrap3d || loadedRoot3d) return;
+      wrap3d.style.setProperty("--pot-rotate-y", `${previewRotateY}deg`);
+      wrap3d.style.setProperty("--pot-rotate-x", `${previewRotateX}deg`);
+      wrap3d.style.setProperty("--pot-scale", previewScale.toFixed(3));
+      updatePreviewHotspots3d();
+    }
+
+    function stopPreviewSpin3d() {
+      previewAutoSpin = false;
+      wrap3d?.classList.add("is-fixed-view");
+    }
+
+    function setPreviewView3d(view) {
+      wrap3d?.classList.add("is-fixed-view");
+      if (view === "front") {
+        previewRotateY = 0;
+        previewRotateX = 0;
+        previewScale = 1;
+        previewAutoSpin = false;
+      } else if (view === "side") {
+        previewRotateY = 18;
+        previewRotateX = 0;
+        previewScale = .98;
+        previewAutoSpin = false;
+      } else if (view === "top") {
+        previewRotateY = 0;
+        previewRotateX = 10;
+        previewScale = .96;
+        previewAutoSpin = false;
+      } else if (view === "spin") {
+        previewAutoSpin = !previewAutoSpin;
+        wrap3d?.classList.toggle("is-fixed-view", !previewAutoSpin);
+      }
+      renderPreview3d();
+    }
+
+    function startPreviewDrag3d(event) {
+      if (loadedRoot3d || event.target.closest?.(".hotspot, .view-controls, #lensToggle")) return;
+      stopPreviewSpin3d();
+      previewDragging = true;
+      previewLastX = event.clientX;
+      previewLastY = event.clientY;
+      wrap3d?.classList.add("is-interacting");
+      stage3d?.setPointerCapture?.(event.pointerId);
+    }
+
+    function movePreviewDrag3d(event) {
+      if (!previewDragging || loadedRoot3d) return;
+      const dx = event.clientX - previewLastX;
+      const dy = event.clientY - previewLastY;
+      previewLastX = event.clientX;
+      previewLastY = event.clientY;
+      previewRotateY = clamp3d(previewRotateY + dx * .16, -24, 24);
+      previewRotateX = clamp3d(previewRotateX - dy * .08, -10, 12);
+      renderPreview3d();
+    }
+
+    function finishPreviewDrag3d(event) {
+      if (!previewDragging) return;
+      previewDragging = false;
+      wrap3d?.classList.remove("is-interacting");
+      if (event?.pointerId !== undefined) stage3d?.releasePointerCapture?.(event.pointerId);
     }
 
     function enhanceMaterials3d(root) {
@@ -3311,15 +3435,18 @@
       controls3d.update();
       stage3d?.classList.add("hunyuan-loaded");
       if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型已加载";
+      updatePreviewHotspots3d();
       updateHotspots3d();
       window.showToast?.("混元3D模型已加载，可自由拖拽观察。");
     }
 
     function loadModel3d() {
+      if (model3dLoadStarted) return;
+      model3dLoadStarted = true;
       const loader = new GLTFLoader();
       if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型加载中";
       loader.load(
-        "./assets/wuma-hunyuan-model-mobile.glb",
+        "./assets/wuma-hunyuan-model-mobile-lite.glb",
         (gltf) => {
           enhanceMaterials3d(gltf.scene);
           fitModel3d(gltf.scene);
@@ -3340,6 +3467,11 @@
           window.showToast?.("混元3D模型加载失败，请检查模型文件。");
         }
       );
+    }
+
+    function requestModel3dLoad() {
+      resize3d();
+      loadModel3d();
     }
 
     function anchorToWorld3d(anchor) {
@@ -3370,10 +3502,16 @@
       renderer3d.setSize(width, height, false);
       camera3d.aspect = width / height;
       camera3d.updateProjectionMatrix();
+      updatePreviewHotspots3d();
       updateHotspots3d();
     }
 
     function setView3d(view) {
+      if (!loadedRoot3d) {
+        setPreviewView3d(view);
+        requestModel3dLoad();
+        return;
+      }
       if (view === "spin") {
         controls3d.autoRotate = !controls3d.autoRotate;
         window.showToast?.(controls3d.autoRotate ? "自动旋转已开启。" : "自动旋转已暂停。");
@@ -3409,11 +3547,47 @@
     controls3d.addEventListener("change", updateHotspots3d);
     window.addEventListener("resize", resize3d);
     window.visualViewport?.addEventListener("resize", resize3d);
+    previewImage3d?.addEventListener("load", renderPreview3d);
+    stage3d?.addEventListener("pointerdown", startPreviewDrag3d);
+    stage3d?.addEventListener("pointermove", movePreviewDrag3d);
+    stage3d?.addEventListener("pointerup", finishPreviewDrag3d);
+    stage3d?.addEventListener("pointercancel", finishPreviewDrag3d);
+    stage3d?.addEventListener("pointerleave", finishPreviewDrag3d);
+    stage3d?.addEventListener("wheel", (event) => {
+      if (loadedRoot3d) return;
+      event.preventDefault();
+      stopPreviewSpin3d();
+      previewScale = clamp3d(previewScale + (event.deltaY > 0 ? -.045 : .045), .88, 1.16);
+      renderPreview3d();
+      requestModel3dLoad();
+    }, { passive: false });
 
-    loadModel3d();
     resize3d();
+    renderPreview3d();
+
+    if ("IntersectionObserver" in window && stage3d) {
+      const modelObserver = new IntersectionObserver((entries) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          requestModel3dLoad();
+          modelObserver.disconnect();
+        }
+      }, { rootMargin: "520px 0px" });
+      modelObserver.observe(stage3d);
+    } else {
+      requestModel3dLoad();
+    }
+
+    stage3d?.addEventListener("pointerdown", requestModel3dLoad, { once: true });
+    document.querySelectorAll("[data-view], .hotspot").forEach(button => {
+      button.addEventListener("pointerdown", requestModel3dLoad, { once: true });
+    });
 
     function animate3d() {
+      if (!loadedRoot3d && previewAutoSpin) {
+        previewRotateY += .18;
+        if (previewRotateY > 24) previewRotateY = -24;
+        renderPreview3d();
+      }
       controls3d.update();
       renderer3d.render(scene3d, camera3d);
       updateHotspots3d();
