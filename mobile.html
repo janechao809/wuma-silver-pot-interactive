@@ -1617,8 +1617,11 @@
 
     .mobile-fast .story-video[data-scene="palace"] .scene-player,
     .mobile-fast .story-video[data-scene="palace"] .scene-player.is-playing {
-      display: none;
-      opacity: 0;
+      display: block;
+      z-index: 12;
+      opacity: 1;
+      pointer-events: auto;
+      object-fit: cover;
     }
 
     .mobile-fast .story-video[data-scene="palace"]::before,
@@ -1630,7 +1633,7 @@
     .mobile-fast .story-video[data-scene="palace"] .palace-note,
     .mobile-fast .story-video[data-scene="palace"] .palace-cup,
     .mobile-fast .story-video[data-scene="palace"] .cup-path {
-      display: block;
+      display: none;
     }
 
     .mobile-fast .story-video[data-scene="palace"] .video-horse {
@@ -2674,10 +2677,9 @@
     let lensEnabled = false;
     let toastTimer;
     let activeSceneAudio = null;
-    const sceneVideos = {};
-    const horseNeighAudio = new Audio("./assets/audio/horse-neigh.mp3");
-    horseNeighAudio.preload = "auto";
-
+    const sceneVideos = {
+      palace: "./assets/videos/qianqiu-mobile-blessing.mp4"
+    };
     const AudioFX = (() => {
       let ctx;
       let master;
@@ -2793,9 +2795,6 @@
 
     function playSceneAudio(scene) {
       if (scene === "palace") {
-        horseNeighAudio.pause();
-        horseNeighAudio.currentTime = 0;
-        horseNeighAudio.play().catch(() => AudioFX.sfx("horse"));
         return;
       }
       AudioFX.sfx(scene === "craft" ? "craft" : "scene");
@@ -2810,12 +2809,12 @@
           if (!scenePlayer.src.endsWith(src.replace("./", ""))) {
             scenePlayer.src = src;
           }
+          scenePlayer.muted = false;
+          scenePlayer.volume = 1;
           scenePlayer.currentTime = 0;
           scenePlayer.classList.add("is-playing");
-          const sceneAudioPlayed = scene === "palace";
-          if (sceneAudioPlayed) playSceneAudio(scene);
           scenePlayer.play().catch(() => {
-            if (!sceneAudioPlayed) playSceneAudio(scene);
+            if (scene !== "palace") playSceneAudio(scene);
           });
         } else {
           scenePlayer.pause();
