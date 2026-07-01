@@ -2453,7 +2453,7 @@
         <div class="story-board">
           <div class="story-scene">
             <div class="story-video" id="storyVideo" data-scene="intro" aria-label="情境动画视频画面">
-              <video class="scene-player" id="scenePlayer" playsinline preload="none"></video>
+              <video class="scene-player" id="scenePlayer" src="./assets/videos/qianqiu-mobile-blessing.mp4" playsinline preload="auto" loop></video>
               <div class="video-light left"></div>
               <div class="video-light right"></div>
               <div class="video-stage"></div>
@@ -2739,6 +2739,18 @@
         src.start(now);
       }
 
+      function prime() {
+        const audioCtx = ensure();
+        const buffer = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+        const src = audioCtx.createBufferSource();
+        const amp = audioCtx.createGain();
+        amp.gain.value = 0.0001;
+        src.buffer = buffer;
+        src.connect(amp);
+        amp.connect(master);
+        src.start();
+      }
+
       function sfx(type) {
         ensure();
         if (type === "correct") {
@@ -2778,6 +2790,7 @@
 
       return {
         unlock: ensure,
+        prime,
         sfx
       };
     })();
@@ -2789,8 +2802,26 @@
       toastTimer = setTimeout(() => toast.classList.remove("show"), 2100);
     }
 
+    let lastSfxType = "";
+    let lastSfxAt = 0;
+
     function playOneShot(type) {
+      const now = performance.now();
+      if (type === lastSfxType && now - lastSfxAt < 170) return;
+      lastSfxType = type;
+      lastSfxAt = now;
       AudioFX.sfx(type);
+    }
+
+    function warmMobileAudio() {
+      AudioFX.prime();
+      if (scenePlayer && scenePlayer.readyState < 2) scenePlayer.load();
+    }
+
+    function pausePalaceVideo() {
+      if (!scenePlayer || storyVideo?.dataset.scene !== "palace") return;
+      scenePlayer.pause();
+      scenePlayer.classList.remove("is-playing");
     }
 
     function playSceneAudio(scene) {
@@ -2809,17 +2840,20 @@
           if (!scenePlayer.src.endsWith(src.replace("./", ""))) {
             scenePlayer.src = src;
           }
+          scenePlayer.loop = true;
           scenePlayer.muted = false;
           scenePlayer.volume = 1;
-          scenePlayer.currentTime = 0;
+          if (scenePlayer.fastSeek) {
+            scenePlayer.fastSeek(0);
+          } else {
+            scenePlayer.currentTime = 0;
+          }
           scenePlayer.classList.add("is-playing");
           scenePlayer.play().catch(() => {
             if (scene !== "palace") playSceneAudio(scene);
           });
         } else {
           scenePlayer.pause();
-          scenePlayer.removeAttribute("src");
-          scenePlayer.load();
           scenePlayer.classList.remove("is-playing");
           playSceneAudio(scene);
         }
@@ -2828,7 +2862,30 @@
       }
     }
 
-    document.body.addEventListener("pointerdown", () => AudioFX.unlock(), { once: true });
+    if (scenePlayer) {
+      scenePlayer.loop = true;
+      scenePlayer.muted = false;
+      scenePlayer.volume = 1;
+      scenePlayer.load();
+    }
+
+    document.addEventListener("pointerdown", (event) => {
+      warmMobileAudio();
+      const target = event.target.closest(".hotspot, #lensToggle, .choice, #autoFill, #resetAll, #timeline button, .drag-card, #buildConclusion");
+      if (!target) return;
+      if (storyVideo?.dataset.scene === "palace" && !target.matches('#timeline button[data-tag="千秋节"]')) {
+        pausePalaceVideo();
+      }
+      if (target.matches(".hotspot")) {
+        playOneShot("hotspot");
+      } else if (target.matches(".choice, #lensToggle, #resetAll")) {
+        playOneShot("select");
+      } else if (target.matches(".drag-card")) {
+        playOneShot("pick");
+      }
+    }, { capture: true, passive: true });
+
+    document.addEventListener("touchstart", warmMobileAudio, { capture: true, passive: true, once: true });
 
     function updateProgress() {
       foundCount.textContent = collected.size;
