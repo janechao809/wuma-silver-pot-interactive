@@ -97,6 +97,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 18px;
       padding: 14px clamp(18px, 4vw, 54px);
       background: rgba(247, 241, 228, .86);
@@ -109,6 +110,7 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
+      flex: 1 1 320px;
     }
 
     .seal {
@@ -159,6 +161,49 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      flex: 0 1 auto;
+    }
+
+    .student-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(92px, 1fr));
+      gap: 8px;
+      min-width: min(38vw, 430px);
+      flex: 1 1 330px;
+    }
+
+    .student-meta label {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border: 1px solid rgba(7, 59, 50, .16);
+      border-radius: 999px;
+      color: rgba(23, 39, 35, .72);
+      background: rgba(255, 250, 240, .72);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .student-meta input {
+      min-width: 0;
+      min-height: 0;
+      padding: 2px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--deep);
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: none;
+    }
+
+    .student-meta input:focus {
+      border-color: transparent;
+      box-shadow: none;
+      outline: none;
     }
 
     .nav a,
@@ -195,8 +240,8 @@
     .hero {
       min-height: calc(100vh - 72px);
       display: grid;
-      grid-template-columns: minmax(320px, 1.1fr) minmax(360px, .9fr);
-      gap: clamp(22px, 4vw, 54px);
+      grid-template-columns: minmax(620px, 1fr) minmax(360px, .8fr);
+      gap: clamp(22px, 3vw, 42px);
       align-items: center;
       padding: clamp(28px, 5vw, 70px) clamp(18px, 5vw, 72px) 38px;
     }
@@ -231,15 +276,20 @@
     .hero h2 {
       position: relative;
       margin: 0;
-      max-width: 780px;
-      font-size: clamp(38px, 7vw, 84px);
-      line-height: .98;
+      max-width: 940px;
+      font-size: clamp(40px, 4.6vw, 58px);
+      line-height: 1.04;
       letter-spacing: 0;
       color: var(--deep);
     }
 
-    .hero h2 span {
+    .hero-title-line,
+    .hero-title-gold {
       display: block;
+      white-space: nowrap;
+    }
+
+    .hero-title-gold {
       color: transparent;
       background: linear-gradient(90deg, #8b6824, #d7a038 32%, #fff1a8 48%, #d7a038 62%, #78551e);
       background-size: 220% 100%;
@@ -287,36 +337,122 @@
 
     .hero-panel {
       position: relative;
+      --spot-x: 48%;
+      --spot-y: 40%;
       min-height: 580px;
       border: 1px solid rgba(7, 59, 50, .16);
       border-radius: 16px;
-      background:
-        linear-gradient(180deg, rgba(255,250,240,.86), rgba(236,247,238,.78)),
-        url("./assets/appreciation-method.png") center / cover;
+      background: #d6bf8d;
       box-shadow: var(--shadow);
       overflow: hidden;
+      isolation: isolate;
     }
 
     .hero-panel::before {
       content: "";
       position: absolute;
+      inset: -18px;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, rgba(59, 35, 8, .16), rgba(7, 59, 50, .34)),
+        url("./assets/hero-research-poster.png") center / cover;
+      filter: blur(7px) saturate(.86) contrast(.9);
+      transform: scale(1.04);
+      opacity: .88;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -16%;
+      z-index: 4;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at var(--spot-x) var(--spot-y), rgba(255, 250, 220, .72) 0 7%, rgba(242, 207, 116, .28) 14%, rgba(255, 255, 255, .14) 25%, transparent 43%),
+        conic-gradient(from 12deg at var(--spot-x) var(--spot-y), transparent 0 10deg, rgba(255, 239, 179, .2) 18deg, transparent 34deg 360deg);
+      mix-blend-mode: screen;
+      filter: blur(.4px);
+      opacity: .92;
+    }
+
+    .hero-panel-reveal {
+      position: absolute;
       inset: 0;
-      background: linear-gradient(120deg, rgba(7, 59, 50, .88), rgba(7, 59, 50, .28) 52%, rgba(255,250,240,.78));
+      z-index: 2;
+      pointer-events: none;
+      background: url("./assets/hero-research-poster.png") center / cover;
+      filter: saturate(1.13) contrast(1.1) brightness(1.04);
+      -webkit-mask-image: radial-gradient(circle 122px at var(--spot-x) var(--spot-y), #000 0 64%, rgba(0,0,0,.58) 76%, transparent 100%);
+      mask-image: radial-gradient(circle 122px at var(--spot-x) var(--spot-y), #000 0 64%, rgba(0,0,0,.58) 76%, transparent 100%);
+    }
+
+    .hero-light-ring {
+      position: absolute;
+      left: var(--spot-x);
+      top: var(--spot-y);
+      z-index: 5;
+      width: 244px;
+      height: 244px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 250, 232, .92);
+      background:
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.32), transparent 22%),
+        radial-gradient(circle, rgba(255, 250, 232, .06), rgba(242, 207, 116, .08) 56%, transparent 72%);
+      box-shadow: 0 0 0 10px rgba(242, 207, 116, .13), 0 0 50px rgba(255, 242, 181, .5), inset 0 0 22px rgba(255, 250, 240, .3);
+      transform: translate(-50%, -50%) rotate(-10deg);
+      pointer-events: none;
+    }
+
+    .hero-light-ring::after {
+      content: "";
+      position: absolute;
+      width: 78px;
+      height: 14px;
+      right: -52px;
+      bottom: 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 250, 232, .96), rgba(156, 99, 25, .92));
+      box-shadow: 0 12px 22px rgba(59, 35, 8, .24);
+      transform: rotate(42deg);
+      transform-origin: left center;
+    }
+
+    .hero-sparkles {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 22% 30%, rgba(255, 242, 181, .86) 0 2px, transparent 3px),
+        radial-gradient(circle at 66% 24%, rgba(255, 250, 240, .76) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 82% 62%, rgba(242, 207, 116, .8) 0 2px, transparent 3px),
+        radial-gradient(circle at 36% 72%, rgba(255, 250, 240, .7) 0 1.5px, transparent 3px);
+      opacity: .7;
+      filter: drop-shadow(0 0 8px rgba(242, 207, 116, .7));
+      animation: stageSparkle 3.8s ease-in-out infinite;
     }
 
     .hero-panel-inner {
       position: absolute;
       inset: 24px;
+      z-index: 4;
       display: grid;
       align-content: end;
       color: #fffaf0;
     }
 
     .hero-panel-title {
-      max-width: 420px;
-      font-size: clamp(28px, 4vw, 46px);
-      line-height: 1.1;
+      max-width: 100%;
+      font-size: clamp(27px, 2.7vw, 36px);
+      line-height: 1.08;
       font-weight: 700;
+      text-wrap: balance;
+      word-break: keep-all;
+    }
+
+    .hero-panel-title span {
+      display: block;
+      white-space: nowrap;
     }
 
     .hero-panel-sub {
@@ -359,6 +495,14 @@
     .secondary:hover {
       transform: translateY(-4px) scale(1.015);
       box-shadow: 0 20px 38px rgba(7, 59, 50, .14), 0 12px 24px rgba(215, 160, 56, .24);
+    }
+
+    .primary:disabled,
+    .secondary:disabled {
+      cursor: wait;
+      opacity: .62;
+      transform: none;
+      box-shadow: none;
     }
 
     .section {
@@ -510,15 +654,18 @@
       width: min(92%, 660px);
       aspect-ratio: 1 / 1;
       animation: none;
+      z-index: 10;
+      isolation: isolate;
       --pot-rotate-y: 0deg;
       --pot-rotate-x: 0deg;
       --pot-scale: 1;
+      touch-action: none;
     }
 
     #artifact3d {
       position: absolute;
       inset: 0;
-      z-index: 2;
+      z-index: 1;
       width: 100%;
       height: 100%;
       display: block;
@@ -544,6 +691,26 @@
     .artifact-canvas.hunyuan-loaded .artifact-wrap.model-mode .artifact-reference {
       opacity: 0;
       visibility: hidden;
+    }
+
+    .artifact-canvas.local-preview-mode #artifact3d,
+    .artifact-canvas.model-fallback-mode #artifact3d {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .artifact-canvas.local-preview-mode .artifact-wrap.model-mode .artifact-reference,
+    .artifact-canvas.model-fallback-mode .artifact-wrap.model-mode .artifact-reference {
+      opacity: 1;
+      visibility: visible;
+      animation: none;
+      transform: translateX(-50%) perspective(900px) rotateX(var(--pot-rotate-x)) rotateY(var(--pot-rotate-y)) scale(var(--pot-scale));
+      transition: opacity .35s ease, visibility .35s ease, transform .08s linear;
+    }
+
+    .artifact-canvas.local-preview-mode .artifact-wrap.model-mode.is-interacting .artifact-reference,
+    .artifact-canvas.model-fallback-mode .artifact-wrap.model-mode.is-interacting .artifact-reference {
+      cursor: grabbing;
     }
 
     .artifact-wrap.model-mode.is-interacting .artifact-reference,
@@ -589,9 +756,16 @@
       visibility: hidden;
     }
 
+    .artifact-canvas.local-preview-mode .model-loading-status,
+    .artifact-canvas.model-fallback-mode .model-loading-status {
+      opacity: 1;
+      transform: none;
+      visibility: visible;
+    }
+
     .artifact-canvas:not(.hunyuan-loaded) .hotspot {
-      opacity: .5;
-      pointer-events: none;
+      opacity: .92;
+      pointer-events: auto;
     }
 
     .model-hint {
@@ -669,7 +843,7 @@
 
     .hotspot {
       position: absolute;
-      z-index: 25;
+      z-index: 100;
       width: 30px;
       height: 30px;
       border: 0;
@@ -697,6 +871,7 @@
     .hotspot::after {
       content: attr(data-label);
       position: absolute;
+      z-index: 2;
       left: 50%;
       top: -38px;
       transform: translateX(-50%);
@@ -709,6 +884,12 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity .2s ease, top .2s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot.active,
+    .hotspot.seen {
+      z-index: 95;
     }
 
     .hotspot:hover,
@@ -945,7 +1126,10 @@
     .step-card h4 {
       margin: 14px 0 8px;
       color: var(--deep);
-      font-size: 23px;
+      font-size: clamp(19px, 1.55vw, 21px);
+      line-height: 1.25;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .step-card p {
@@ -1884,6 +2068,266 @@
       line-height: 1.7;
     }
 
+    .ai-evaluator {
+      position: relative;
+      padding: 24px;
+      border: 1px solid rgba(7, 59, 50, .15);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 88% 12%, rgba(242, 207, 116, .2), transparent 28%),
+        rgba(255, 250, 240, .78);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .ai-evaluator::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(112deg, transparent 0 42%, rgba(255, 250, 240, .45) 50%, transparent 62%);
+      transform: translateX(-120%);
+      animation: panelSheen 10s ease-in-out infinite;
+    }
+
+    .ai-evaluator > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    #ai-evaluation .section-head h3 {
+      white-space: nowrap;
+      font-size: clamp(34px, 3.6vw, 46px);
+      word-break: keep-all;
+    }
+
+    .ai-rubric-note {
+      margin: 0 0 18px;
+      padding: 16px 18px;
+      color: var(--deep);
+      background: rgba(236, 247, 238, .86);
+      border: 1px dashed rgba(7, 59, 50, .22);
+      border-radius: 12px;
+      line-height: 1.75;
+      font-weight: 700;
+    }
+
+    .ai-eval-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, .82fr) minmax(420px, 1.18fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .ai-process-review {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .ai-process-card {
+      position: relative;
+      min-height: 92px;
+      padding: 16px;
+      border: 1px solid rgba(7, 59, 50, .12);
+      border-radius: 14px;
+      background:
+        linear-gradient(145deg, rgba(255, 250, 240, .78), rgba(236, 247, 238, .72));
+      overflow: hidden;
+    }
+
+    .ai-process-card::after {
+      content: "";
+      position: absolute;
+      inset: -60% auto auto -30%;
+      width: 80%;
+      height: 180%;
+      background: linear-gradient(90deg, transparent, rgba(255, 246, 210, .82), transparent);
+      transform: rotate(18deg) translateX(-120%);
+      animation: aiScan 6.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .ai-process-card b {
+      display: block;
+      color: var(--deep);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .ai-process-card span {
+      display: block;
+      margin-top: 9px;
+      color: rgba(23, 39, 35, .68);
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .ai-eval-input {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ai-eval-input textarea {
+      min-height: 220px;
+    }
+
+    .ai-eval-tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ai-mode-tabs {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px;
+      border: 1px solid rgba(7, 59, 50, .14);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, .76);
+      box-shadow: 0 12px 28px rgba(7, 59, 50, .08);
+    }
+
+    .ai-mode-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: rgba(23, 39, 35, .72);
+      background: transparent;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+
+    .ai-mode-tab:hover {
+      transform: translateY(-2px);
+      color: var(--deep);
+      background: rgba(236, 247, 238, .82);
+    }
+
+    .ai-mode-tab.active {
+      color: #fffaf0;
+      background: linear-gradient(135deg, rgba(7,59,50,.96), rgba(15,122,99,.86));
+      box-shadow: 0 12px 24px rgba(7, 59, 50, .16);
+    }
+
+    .ai-feedback {
+      border: 1px solid rgba(7, 59, 50, .12);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .ai-feedback-row {
+      display: grid;
+      grid-template-columns: minmax(150px, .7fr) minmax(98px, .45fr) minmax(260px, 1.45fr);
+      gap: 16px;
+      align-items: start;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(7, 59, 50, .1);
+    }
+
+    .ai-feedback-row:last-child {
+      border-bottom: 0;
+    }
+
+    .ai-feedback-row.evaluated {
+      animation: aiRowReveal .55s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    .ai-feedback-head {
+      color: var(--deep);
+      font-weight: 800;
+    }
+
+    .ai-stars {
+      color: #d7a038;
+      font-size: 20px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      text-shadow: 0 0 14px rgba(242, 207, 116, .22);
+    }
+
+    .self-stars {
+      display: inline-flex;
+      gap: 2px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .self-star {
+      border: 0;
+      padding: 0 1px;
+      color: rgba(215, 160, 56, .34);
+      background: transparent;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform .16s ease, color .16s ease, filter .16s ease;
+    }
+
+    .self-star:hover {
+      transform: translateY(-2px) scale(1.16);
+      color: #f2cf74;
+    }
+
+    .self-star.lit {
+      color: #d7a038;
+      filter: drop-shadow(0 0 8px rgba(242, 207, 116, .42));
+      animation: starPop .28s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .ai-feedback-text {
+      margin: 0;
+      color: rgba(23, 39, 35, .78);
+      line-height: 1.65;
+    }
+
+    .ai-next-step {
+      margin-top: 14px;
+      padding: 16px 18px;
+      color: #fffaf0;
+      background: linear-gradient(135deg, rgba(7, 59, 50, .96), rgba(15, 122, 99, .86));
+      border-radius: 14px;
+      line-height: 1.7;
+      box-shadow: 0 16px 34px rgba(7, 59, 50, .16);
+    }
+
+    .ai-next-step.is-ready {
+      animation: aiPulse .85s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    .ai-prompt-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(255, 250, 240, .65);
+      border: 1px solid rgba(7, 59, 50, .12);
+      color: rgba(23, 39, 35, .68);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .submit-status {
+      min-height: 20px;
+      margin: 0;
+      color: rgba(23, 39, 35, .66);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .submit-status.ok {
+      color: var(--jade);
+      font-weight: 800;
+    }
+
+    .submit-status.error {
+      color: #b74e2b;
+      font-weight: 800;
+    }
+
     .toast {
       position: fixed;
       right: 24px;
@@ -1934,6 +2378,40 @@
       0%, 28% { transform: translateX(-120%); opacity: 0; }
       42% { opacity: .78; }
       62%, 100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes stageSpotSweep {
+      0%, 100% { transform: translate3d(-2%, -1%, 0) scale(1); opacity: .72; }
+      38% { transform: translate3d(5%, 2%, 0) scale(1.06); opacity: .96; }
+      68% { transform: translate3d(-4%, 5%, 0) scale(1.02); opacity: .82; }
+    }
+
+    @keyframes stageSparkle {
+      0%, 100% { opacity: .42; transform: translateY(0); }
+      34% { opacity: .95; transform: translateY(-4px); }
+      62% { opacity: .55; transform: translateY(3px); }
+    }
+
+    @keyframes aiScan {
+      0%, 36% { transform: rotate(18deg) translateX(-130%); opacity: 0; }
+      50% { opacity: .85; }
+      74%, 100% { transform: rotate(18deg) translateX(190%); opacity: 0; }
+    }
+
+    @keyframes aiRowReveal {
+      from { opacity: 0; transform: translateY(14px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes aiPulse {
+      0% { transform: translateY(10px); opacity: .4; box-shadow: 0 0 0 rgba(242, 207, 116, 0); }
+      100% { transform: translateY(0); opacity: 1; box-shadow: 0 18px 38px rgba(7, 59, 50, .18), 0 0 0 8px rgba(242, 207, 116, .12); }
+    }
+
+    @keyframes starPop {
+      0% { transform: scale(.62) rotate(-12deg); }
+      70% { transform: scale(1.2) rotate(4deg); }
+      100% { transform: scale(1) rotate(0); }
     }
 
     @keyframes rippleBurst {
@@ -2140,7 +2618,8 @@
       .hero,
       .lab,
       .story-board,
-      .match-grid {
+      .match-grid,
+      .ai-eval-grid {
         grid-template-columns: 1fr;
       }
 
@@ -2150,6 +2629,10 @@
 
       .steps {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero h2 {
+        font-size: clamp(38px, 7vw, 68px);
       }
     }
 
@@ -2164,14 +2647,31 @@
         justify-content: flex-start;
       }
 
+      .student-meta {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: 1fr;
+      }
+
       .hero {
         min-height: auto;
       }
 
       .mission-strip,
       .steps,
-      .worksheet-grid {
+      .worksheet-grid,
+      .ai-process-review {
         grid-template-columns: 1fr;
+      }
+
+      .hero-title-line,
+      .hero-title-gold {
+        white-space: normal;
+      }
+
+      .ai-feedback-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
 
       .artifact-stage,
@@ -2204,6 +2704,11 @@
           <p>六年级美术课 · 证据化欣赏</p>
         </div>
       </div>
+      <div class="student-meta" aria-label="学生信息">
+        <label>班级：<input id="studentClass" type="text" autocomplete="off"></label>
+        <label>小组：<input id="studentGroup" type="text" autocomplete="off"></label>
+        <label>姓名：<input id="studentName" type="text" autocomplete="off"></label>
+      </div>
       <nav class="nav" aria-label="课堂导航">
         <a href="#observe">文物探查</a>
         <a href="#method">四步欣赏</a>
@@ -2216,7 +2721,7 @@
       <section class="hero">
         <div class="hero-copy">
           <div class="eyebrow">典型文物 · 唐代 · 陕西历史博物馆</div>
-          <h2>像侦探一样，读懂一只<span>会讲唐朝故事的银壶</span></h2>
+          <h2><span class="hero-title-line">像侦探一样，读懂一只</span><span class="hero-title-gold">会讲唐朝故事的银壶</span></h2>
           <p class="hero-lead">
             这件银壶出自何家村窖藏，造型借鉴北方游牧民族皮囊壶，壶腹上有鎏金舞马衔杯纹。今天不急着背知识，先用眼睛找证据，再用“描述、分析、解释、评价”说出自己的发现。
           </p>
@@ -2232,8 +2737,11 @@
           </div>
         </div>
         <div class="hero-panel" aria-label="学习方法参考图">
+          <div class="hero-panel-reveal" aria-hidden="true"></div>
+          <div class="hero-light-ring" aria-hidden="true"></div>
+          <div class="hero-sparkles" aria-hidden="true"></div>
           <div class="hero-panel-inner">
-            <div class="hero-panel-title">把欣赏变成一次“证据采集”</div>
+            <div class="hero-panel-title"><span>把欣赏变成一次</span><span>“证据采集”</span></div>
             <div class="hero-panel-sub">
               每点亮一个部位，就得到一条可写进学习单的证据。小组讨论时，可以先说“我看见……所以我推测……”。
             </div>
@@ -2268,7 +2776,7 @@
                 <button class="hotspot hs-horse" data-id="horse" data-label="鎏金舞马" aria-label="查看鎏金舞马"></button>
                 <button class="hotspot hs-craft" data-id="craft" data-label="捶揲模压" aria-label="查看捶揲模压"></button>
               </div>
-              <div class="model-loading-status" id="modelLoadingStatus">3D模型加载中</div>
+              <div class="model-loading-status" id="modelLoadingStatus">3D模型准备中</div>
               <div class="view-controls" aria-label="3D观察视角">
                 <button type="button" data-view="front">正面</button>
                 <button type="button" data-view="side">侧面</button>
@@ -2509,6 +3017,79 @@
 
         </div>
       </section>
+
+      <section class="section" id="ai-evaluation">
+        <div class="ai-evaluator">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">06 · 学习评价</div>
+              <h3>证据化鉴赏评价量表</h3>
+            </div>
+            <p class="section-desc">试着把自己的鉴赏结论交给AI评价助手，看看哪些地方已经说清楚，哪些地方还可以补充证据。</p>
+          </div>
+
+          <p class="ai-rubric-note">你的鉴赏结论不是越长越好，而是要做到：看得见细节，说得出依据，连得上文化，表达得清楚。</p>
+
+          <div class="ai-process-review" aria-label="学习过程回顾">
+            <div class="ai-process-card"><b id="reviewEvidenceCount">0</b><span>已点亮的文物证据</span></div>
+            <div class="ai-process-card"><b id="reviewChoiceCount">0</b><span>已选择的四步欣赏要点</span></div>
+            <div class="ai-process-card"><b id="reviewConclusionState">待完善</b><span>鉴赏结论完成状态</span></div>
+          </div>
+
+          <div class="ai-eval-grid">
+            <div class="ai-eval-input">
+              <label class="note-cell">学生鉴赏结论
+                <textarea id="aiStudentConclusion" placeholder="可以粘贴学习单生成的结论，也可以输入自己的完整鉴赏结论。"></textarea>
+              </label>
+              <div class="ai-mode-tabs" aria-label="选择评价主体">
+                <button class="ai-mode-tab active" type="button" data-eval-mode="self">学生自评</button>
+                <button class="ai-mode-tab" type="button" data-eval-mode="ai">AI评价</button>
+              </div>
+              <div class="ai-eval-tools">
+                <button class="primary" id="selfEvaluateBtn" type="button">生成自评结论</button>
+                <button class="primary" id="aiEvaluateBtn" type="button">AI评价我的结论</button>
+                <button class="primary" id="submitLearningData" type="button">提交学习数据</button>
+              </div>
+              <p class="submit-status" id="submitStatus" aria-live="polite"></p>
+              <div class="ai-prompt-box">
+                评价标准：从“观察是否具体、分析是否有美术依据、文化理解是否深入、表达是否清楚生动”四个维度给出1—5星评价，并给出具体、可操作的修改建议。
+              </div>
+            </div>
+
+            <div>
+              <div class="ai-feedback" id="aiFeedbackTable" aria-live="polite">
+                <div class="ai-feedback-row">
+                  <div class="ai-feedback-head">维度</div>
+                  <div class="ai-feedback-head">星级</div>
+                  <div class="ai-feedback-head" id="aiFeedbackHead">自评反馈</div>
+                </div>
+                <div class="ai-feedback-row" data-dimension="observe">
+                  <div>观察是否具体</div>
+                  <div class="self-stars" data-score="0" aria-label="观察是否具体星级"></div>
+                  <p class="ai-feedback-text">先给自己点亮星星，再生成自评结论。</p>
+                </div>
+                <div class="ai-feedback-row" data-dimension="analyze">
+                  <div>分析是否有依据</div>
+                  <div class="self-stars" data-score="0" aria-label="分析是否有依据星级"></div>
+                  <p class="ai-feedback-text">先给自己点亮星星，再生成自评结论。</p>
+                </div>
+                <div class="ai-feedback-row" data-dimension="culture">
+                  <div>文化理解是否深入</div>
+                  <div class="self-stars" data-score="0" aria-label="文化理解是否深入星级"></div>
+                  <p class="ai-feedback-text">先给自己点亮星星，再生成自评结论。</p>
+                </div>
+                <div class="ai-feedback-row" data-dimension="expression">
+                  <div>表达是否清楚生动</div>
+                  <div class="self-stars" data-score="0" aria-label="表达是否清楚生动星级"></div>
+                  <p class="ai-feedback-text">先给自己点亮星星，再生成自评结论。</p>
+                </div>
+              </div>
+              <div class="ai-next-step" id="aiNextStep">下一步修改建议会显示在这里。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -2517,7 +3098,7 @@
   <script>
     (() => {
       const revealTargets = document.querySelectorAll(
-        ".hero-copy, .hero-panel, .mission-card, .section-head, .artifact-stage, .evidence-panel, .step-card, .story-video, .timeline button, .challenge, .note-panel"
+        ".hero-copy, .hero-panel, .mission-card, .section-head, .artifact-stage, .evidence-panel, .step-card, .story-video, .timeline button, .challenge, .note-panel, .ai-evaluator"
       );
 
       revealTargets.forEach((el, index) => {
@@ -2546,6 +3127,33 @@
           setTimeout(() => ripple.remove(), 700);
         });
       });
+
+      const heroPanel = document.querySelector(".hero-panel");
+      if (heroPanel) {
+        const points = [
+          [30, 34],
+          [66, 31],
+          [78, 58],
+          [52, 72],
+          [28, 62],
+          [45, 42]
+        ];
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const ease = t => .5 - Math.cos(t * Math.PI) / 2;
+        const moveSpot = time => {
+          const cycle = 9600;
+          const scaled = (time % cycle) / cycle * points.length;
+          const index = Math.floor(scaled);
+          const next = (index + 1) % points.length;
+          const t = ease(scaled - index);
+          const x = lerp(points[index][0], points[next][0], t);
+          const y = lerp(points[index][1], points[next][1], t);
+          heroPanel.style.setProperty("--spot-x", `${x}%`);
+          heroPanel.style.setProperty("--spot-y", `${y}%`);
+          requestAnimationFrame(moveSpot);
+        };
+        requestAnimationFrame(moveSpot);
+      }
     })();
   </script>
 
@@ -2590,6 +3198,7 @@
       interpret: "",
       evaluate: ""
     };
+    const QUICKFORM_ENDPOINT = "https://quickform.cn/api/q6frl7ocje";
 
     const factCard = document.querySelector("#factCard");
     const promptBox = document.querySelector("#promptBox");
@@ -2604,10 +3213,8 @@
     let toastTimer;
     let activeSceneAudio = null;
     const sceneVideos = {
-      palace: "./assets/videos/horse-cup-dance.mp4"
+      palace: "./assets/videos/qianqiu-mobile-blessing.mp4"
     };
-    const horseNeighAudio = new Audio("./assets/audio/horse-neigh.mp3");
-    horseNeighAudio.preload = "auto";
 
     const AudioFX = (() => {
       let ctx;
@@ -2723,12 +3330,6 @@
     }
 
     function playSceneAudio(scene) {
-      if (scene === "palace") {
-        horseNeighAudio.pause();
-        horseNeighAudio.currentTime = 0;
-        horseNeighAudio.play().catch(() => AudioFX.sfx("horse"));
-        return;
-      }
       AudioFX.sfx(scene === "craft" ? "craft" : "scene");
     }
 
@@ -2742,14 +3343,15 @@
             scenePlayer.src = src;
           }
           scenePlayer.currentTime = 0;
+          scenePlayer.loop = scene === "palace";
           scenePlayer.classList.add("is-playing");
-          const sceneAudioPlayed = scene === "palace";
-          if (sceneAudioPlayed) playSceneAudio(scene);
+          const sceneAudioPlayed = Boolean(src);
           scenePlayer.play().catch(() => {
             if (!sceneAudioPlayed) playSceneAudio(scene);
           });
         } else {
           scenePlayer.pause();
+          scenePlayer.loop = false;
           scenePlayer.removeAttribute("src");
           scenePlayer.load();
           scenePlayer.classList.remove("is-playing");
@@ -2781,6 +3383,7 @@
       const before = collected.size;
       collected.add(id);
       updateProgress();
+      updateEvaluationReview();
       playOneShot("hotspot");
       if (collected.size > before) showToast("证据已收入学习单。");
     }
@@ -2836,6 +3439,7 @@
         };
         const target = document.querySelector(textareas[group.dataset.step]);
         if (target && !target.value.trim()) target.value = choice.dataset.value;
+        updateEvaluationReview();
         showToast("已记录一个欣赏关键词。");
       });
     });
@@ -2846,6 +3450,7 @@
       document.querySelector("#noteAnalyze").value ||= "它把皮囊式造型、舞马纹样和捶揲、模压、焊接、鎏金等工艺结合起来。";
       document.querySelector("#noteInterpret").value ||= "舞马衔杯纹样与唐代宫廷千秋节祝寿表演有关，皮囊造型体现民族文化交流。";
       document.querySelector("#noteEvaluate").value ||= "它是认识唐代生活、审美趣味、民族交流和金银器技术水平的重要实物证据。";
+      updateEvaluationReview();
       showToast(values.length ? "已把采集到的证据带入学习单。" : "先点击文物热点，学习单会更有证据。");
     });
 
@@ -2909,7 +3514,335 @@
       playOneShot("complete");
       showToast("欣赏结论已生成，可以请小组代表朗读。");
       burstConfetti();
+      updateEvaluationReview();
     });
+
+    const evalDimensions = {
+      observe: {
+        name: "观察是否具体",
+        keywords: ["壶盖", "提梁", "壶身", "舞马", "鎏金", "錾刻", "锤揲", "捶揲", "银链", "纹样"],
+        self: ["我还需要多补充可看见的细节。", "我能说出一点细节，可以继续补充壶盖、提梁或工艺。", "我提到了一些文物细节，观察比较清楚。", "我能抓住多个可观察细节，证据比较充分。", "我观察很具体，能把造型、纹样和工艺细节都说出来。"],
+        ai: ["你还可以先补充看得见的部位，例如壶盖、提梁、壶身或舞马纹样。", "你已经提到一些细节，还可以再补充鎏金、錾刻或锤揲等工艺。", "你的观察比较具体，能看见文物上的关键部分。", "你能说出多个可观察细节，证据感很强。", "你的观察非常具体，像小小文物侦探一样抓住了重要细节。"]
+      },
+      analyze: {
+        name: "分析是否有依据",
+        keywords: ["造型", "纹样", "工艺", "对比", "动感", "精巧", "捶揲", "模压", "焊接", "鎏金"],
+        self: ["我还需要说明为什么这样判断。", "我能说出一点艺术特点，但依据还可以更明确。", "我能从一个角度说明艺术特点。", "我能从造型、纹样或工艺中找到依据。", "我能从多个美术角度说明特点，分析有依据。"],
+        ai: ["你可以补一句“我是从造型、纹样或工艺看出来的”。", "你能说出特点，但要把依据说得更清楚。", "你已经能从一个美术角度分析文物。", "你能联系造型、纹样或工艺来分析，依据比较清楚。", "你的分析很有美术依据，能从多个角度说明艺术特点。"]
+      },
+      culture: {
+        name: "文化理解是否深入",
+        keywords: ["唐代", "宫廷", "千秋节", "祝寿", "审美", "文化交流", "民族", "玄宗", "生活", "技术水平"],
+        self: ["我还需要把文物和唐代文化联系起来。", "我能想到一点历史背景，但还可以说具体。", "我能联系唐代生活或宫廷活动。", "我能说出文物和唐代审美、工艺或交流的关系。", "我能把文物放回唐代文化中理解，文化联系很深入。"],
+        ai: ["你可以补充它和唐代宫廷生活或文化交流有什么关系。", "你已经开始联系文化背景，还可以说得更具体。", "你能联系唐代生活或宫廷活动，这是很好的文化理解。", "你能把文物和唐代审美、工艺水平或文化交流连起来。", "你的文化理解很深入，能把一件银壶放回唐代故事中欣赏。"]
+      },
+      expression: {
+        name: "表达是否清楚生动",
+        keywords: ["我看到", "我发现", "我认为", "所以", "因为", "从", "体现", "表达"],
+        self: ["我的表达还需要按顺序整理。", "我能说出想法，但句子之间还可以更连贯。", "我的表达基本清楚。", "我能按“看到—分析—理解—评价”的顺序表达。", "我的表达清楚生动，适合课堂分享。"],
+        ai: ["你可以按“我看到—我发现—我认为”的顺序再整理一遍。", "你的意思基本能看懂，句子之间可以再连得紧一些。", "你的表达基本清楚，适合继续修改。", "你的表达有顺序，能把观察和理解连起来。", "你的表达清楚生动，已经很适合六年级课堂分享。"]
+      }
+    };
+
+    function starText(score) {
+      return "★★★★★".slice(0, score) + "☆☆☆☆☆".slice(0, 5 - score);
+    }
+
+    function updateEvaluationReview() {
+      const noteValues = ["#noteDescribe", "#noteAnalyze", "#noteInterpret", "#noteEvaluate"].map(selector => document.querySelector(selector)?.value.trim() || "");
+      const noteFilled = noteValues.filter(Boolean).length;
+      const finalText = (document.querySelector("#finalOutput")?.textContent || "").trim();
+      const aiText = (document.querySelector("#aiStudentConclusion")?.value || "").trim();
+      const finalReady = finalText && !finalText.includes("完成观察");
+      const conclusion = aiText || (finalReady ? finalText : "") || noteValues.join("");
+      const selectedByState = Object.keys(selections).filter(key => selections[key]).length;
+      const selectedByDom = document.querySelectorAll(".choice-list .choice.selected").length;
+      const appreciationCount = Math.max(selectedByState, selectedByDom, noteFilled);
+      document.querySelector("#reviewEvidenceCount").textContent = collected.size;
+      document.querySelector("#reviewChoiceCount").textContent = appreciationCount;
+      document.querySelector("#reviewConclusionState").textContent = conclusion.length >= 80 || noteFilled === 4 ? "较完整" : conclusion.length >= 24 || noteFilled >= 2 ? "已开始" : "待完善";
+    }
+
+    function renderSelfStars(container, score = Number(container.dataset.score || 0)) {
+      container.dataset.score = score;
+      container.innerHTML = "";
+      for (let i = 1; i <= 5; i += 1) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `self-star${i <= score ? " lit" : ""}`;
+        btn.textContent = "★";
+        btn.setAttribute("aria-label", `${i}星`);
+        btn.addEventListener("click", () => {
+          renderSelfStars(container, i);
+          playOneShot("select");
+          updateSelfFeedback();
+        });
+        container.appendChild(btn);
+      }
+    }
+
+    function setEvalMode(mode) {
+      document.querySelectorAll(".ai-mode-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.evalMode === mode));
+      document.querySelector("#aiFeedbackHead").textContent = mode === "self" ? "自评反馈" : "AI反馈";
+      if (mode === "self") {
+        document.querySelectorAll(".self-stars").forEach(container => renderSelfStars(container, Number(container.dataset.score || 0)));
+        updateSelfFeedback();
+      }
+      updateEvaluationReview();
+    }
+
+    function updateSelfFeedback() {
+      document.querySelectorAll(".ai-feedback-row[data-dimension]").forEach(row => {
+        const id = row.dataset.dimension;
+        const score = Number(row.querySelector(".self-stars")?.dataset.score || 0);
+        row.querySelector(".ai-feedback-text").textContent = score ? evalDimensions[id].self[score - 1] : "先给自己点亮星星，再生成自评结论。";
+      });
+    }
+
+    function generateSelfConclusion() {
+      const scores = {};
+      document.querySelectorAll(".ai-feedback-row[data-dimension]").forEach(row => {
+        scores[row.dataset.dimension] = Number(row.querySelector(".self-stars")?.dataset.score || 0);
+        row.classList.remove("evaluated");
+        void row.offsetWidth;
+        row.classList.add("evaluated");
+      });
+      const avg = Object.values(scores).reduce((sum, value) => sum + value, 0) / 4;
+      const low = Object.entries(scores).sort((a, b) => a[1] - b[1])[0];
+      const summary = avg >= 4.5 ? "我认为自己的鉴赏结论比较完整，能用证据说明文物价值。" :
+        avg >= 3.2 ? "我认为自己的鉴赏结论基本清楚，但还可以继续补充证据。" :
+        "我认为自己的鉴赏结论还需要继续修改，先把看到的细节说具体。";
+      const nextStep = document.querySelector("#aiNextStep");
+      nextStep.textContent = `${summary} 下一步我准备重点改进“${evalDimensions[low[0]].name}”，让结论更有说服力。`;
+      nextStep.classList.remove("is-ready");
+      void nextStep.offsetWidth;
+      nextStep.classList.add("is-ready");
+      playOneShot("complete");
+      showToast("自评结论已生成，可以继续修改星级。");
+    }
+
+    function scoreByKeywords(text, dimension, bonus = 0) {
+      const hits = evalDimensions[dimension].keywords.filter(keyword => text.includes(keyword)).length;
+      return Math.max(1, Math.min(5, 1 + Math.ceil(hits / 2) + bonus));
+    }
+
+    function generateAiEvaluation() {
+      const input = document.querySelector("#aiStudentConclusion");
+      const text = (input.value || document.querySelector("#finalOutput").textContent || "").trim();
+      if (!text || text.includes("完成观察")) {
+        showToast("请先填写或带入一段鉴赏结论。");
+        input.focus();
+        return;
+      }
+      const processBonus = collected.size >= 4 ? 1 : 0;
+      const choiceBonus = Object.keys(selections).filter(key => selections[key]).length >= 3 ? 1 : 0;
+      const scores = {
+        observe: scoreByKeywords(text, "observe", processBonus),
+        analyze: scoreByKeywords(text, "analyze", choiceBonus),
+        culture: scoreByKeywords(text, "culture", 0),
+        expression: Math.max(1, Math.min(5, (text.length > 70 ? 3 : 2) + (evalDimensions.expression.keywords.some(k => text.includes(k)) ? 1 : 0) + (text.length > 130 ? 1 : 0)))
+      };
+
+      document.querySelectorAll(".ai-feedback-row[data-dimension]").forEach((row, index) => {
+        const id = row.dataset.dimension;
+        const score = scores[id];
+        const container = row.querySelector(".self-stars");
+        container.innerHTML = `<span class="ai-stars">${starText(score)}</span>`;
+        container.dataset.score = score;
+        row.querySelector(".ai-feedback-text").textContent = evalDimensions[id].ai[score - 1];
+        row.classList.remove("evaluated");
+        row.style.animationDelay = `${index * 90}ms`;
+        void row.offsetWidth;
+        row.classList.add("evaluated");
+      });
+
+      const weakest = Object.entries(scores).sort((a, b) => a[1] - b[1])[0][0];
+      const nextAdvice = {
+        observe: "下一步修改建议：请补充一个看得见的细节，例如壶盖、提梁、银链、鎏金舞马或锤揲痕迹。",
+        analyze: "下一步修改建议：请说明你为什么这样判断，可以从造型、纹样或工艺中选择一个角度补一句依据。",
+        culture: "下一步修改建议：请把这件银壶和唐代宫廷生活、千秋节祝寿、审美趣味或文化交流联系起来。",
+        expression: "下一步修改建议：请按“我看到—我发现—我认为”的顺序整理句子，让结论更清楚。"
+      };
+      const nextStep = document.querySelector("#aiNextStep");
+      nextStep.textContent = nextAdvice[weakest];
+      nextStep.classList.remove("is-ready");
+      void nextStep.offsetWidth;
+      nextStep.classList.add("is-ready");
+      setEvalMode("ai");
+      playOneShot("complete");
+      showToast("AI评价已生成，请根据建议修改结论。");
+    }
+
+    function getStudentInfo() {
+      return {
+        className: document.querySelector("#studentClass")?.value.trim() || "",
+        groupName: document.querySelector("#studentGroup")?.value.trim() || "",
+        studentName: document.querySelector("#studentName")?.value.trim() || ""
+      };
+    }
+
+    function persistStudentInfo() {
+      try {
+        localStorage.setItem("wumaStudentInfo", JSON.stringify(getStudentInfo()));
+      } catch (error) {
+        console.warn("Unable to save student info.", error);
+      }
+    }
+
+    function restoreStudentInfo() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("wumaStudentInfo") || "{}");
+        if (saved.className) document.querySelector("#studentClass").value = saved.className;
+        if (saved.groupName) document.querySelector("#studentGroup").value = saved.groupName;
+        if (saved.studentName) document.querySelector("#studentName").value = saved.studentName;
+      } catch (error) {
+        console.warn("Unable to restore student info.", error);
+      }
+    }
+
+    function getEvaluationRows() {
+      return Array.from(document.querySelectorAll(".ai-feedback-row[data-dimension]")).map(row => ({
+        dimension: row.dataset.dimension,
+        dimensionName: evalDimensions[row.dataset.dimension]?.name || "",
+        score: Number(row.querySelector(".self-stars")?.dataset.score || 0),
+        feedback: row.querySelector(".ai-feedback-text")?.textContent.trim() || ""
+      }));
+    }
+
+    function collectLearningPayload() {
+      const finalText = (document.querySelector("#finalOutput")?.textContent || "").trim();
+      const aiText = (document.querySelector("#aiStudentConclusion")?.value || "").trim();
+      const selectedChoices = Array.from(document.querySelectorAll(".choice-list .choice.selected")).map(choice => ({
+        step: choice.closest(".choice-list")?.dataset.step || "",
+        value: choice.dataset.value || choice.textContent.trim(),
+        label: choice.textContent.trim()
+      }));
+      const matchedCards = Array.from(document.querySelectorAll(".drag-card.matched")).map(card => ({
+        match: card.dataset.match,
+        text: card.textContent.trim()
+      }));
+      const notes = {
+        describe: document.querySelector("#noteDescribe")?.value.trim() || "",
+        analyze: document.querySelector("#noteAnalyze")?.value.trim() || "",
+        interpret: document.querySelector("#noteInterpret")?.value.trim() || "",
+        evaluate: document.querySelector("#noteEvaluate")?.value.trim() || ""
+      };
+      const evidenceIds = Array.from(collected);
+      const evidence = evidenceIds.map(id => ({
+        id,
+        title: facts[id]?.title || "",
+        text: facts[id]?.text || ""
+      }));
+      return {
+        submittedAt: new Date().toISOString(),
+        pageTitle: document.title,
+        pageUrl: location.href,
+        userAgent: navigator.userAgent,
+        student: getStudentInfo(),
+        progress: {
+          evidenceCount: collected.size,
+          evidenceTotal: 6,
+          choiceCount: Number(document.querySelector("#reviewChoiceCount")?.textContent || 0),
+          conclusionState: document.querySelector("#reviewConclusionState")?.textContent || ""
+        },
+        evidence,
+        selectedChoices,
+        selections: { ...selections },
+        matchedCards,
+        notes,
+        finalConclusion: finalText.includes("完成观察") ? "" : finalText,
+        studentConclusionForEvaluation: aiText,
+        evaluationMode: document.querySelector(".ai-mode-tab.active")?.dataset.evalMode || "self",
+        evaluationRows: getEvaluationRows(),
+        nextStepAdvice: document.querySelector("#aiNextStep")?.textContent.trim() || ""
+      };
+    }
+
+    function makeQuickFormBody(payload) {
+      const body = new URLSearchParams();
+      body.set("班级", payload.student.className);
+      body.set("小组", payload.student.groupName);
+      body.set("姓名", payload.student.studentName);
+      body.set("已点亮证据数", String(payload.progress.evidenceCount));
+      body.set("四步欣赏要点数", String(payload.progress.choiceCount));
+      body.set("鉴赏结论完成状态", payload.progress.conclusionState);
+      body.set("学生鉴赏结论", payload.studentConclusionForEvaluation || payload.finalConclusion || "");
+      body.set("下一步修改建议", payload.nextStepAdvice);
+      body.set("提交时间", payload.submittedAt);
+      body.set("payload", JSON.stringify(payload));
+      return body;
+    }
+
+    async function submitLearningData() {
+      const student = getStudentInfo();
+      const status = document.querySelector("#submitStatus");
+      const button = document.querySelector("#submitLearningData");
+      status.className = "submit-status";
+      if (!student.className || !student.groupName || !student.studentName) {
+        status.textContent = "请先填写班级、小组和姓名。";
+        status.classList.add("error");
+        showToast("请先填写班级、小组和姓名。");
+        return;
+      }
+      updateEvaluationReview();
+      const payload = collectLearningPayload();
+      const body = makeQuickFormBody(payload);
+      button.disabled = true;
+      status.textContent = "正在提交学习数据……";
+      try {
+        const response = await fetch(QUICKFORM_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: body.toString(),
+          keepalive: true
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        status.textContent = "学习数据已提交。";
+        status.classList.add("ok");
+        playOneShot("correct");
+        showToast("学习数据已提交。");
+      } catch (error) {
+        console.warn("QuickForm submit failed, trying beacon fallback.", error);
+        const sent = navigator.sendBeacon?.(
+          QUICKFORM_ENDPOINT,
+          new Blob([body.toString()], { type: "application/x-www-form-urlencoded;charset=UTF-8" })
+        );
+        if (sent) {
+          status.textContent = "已发送提交请求，后台接收中。";
+          status.classList.add("ok");
+          showToast("已发送提交请求。");
+        } else {
+          status.textContent = "提交失败，请检查网络后再试。";
+          status.classList.add("error");
+          playOneShot("wrong");
+          showToast("提交失败，请检查网络后再试。");
+        }
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    document.querySelectorAll(".self-stars").forEach(container => renderSelfStars(container));
+    document.querySelectorAll(".ai-mode-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        setEvalMode(tab.dataset.evalMode);
+        playOneShot("select");
+      });
+    });
+    document.querySelector("#selfEvaluateBtn")?.addEventListener("click", generateSelfConclusion);
+    document.querySelector("#aiEvaluateBtn")?.addEventListener("click", generateAiEvaluation);
+    document.querySelector("#submitLearningData")?.addEventListener("click", submitLearningData);
+    document.querySelector("#aiStudentConclusion")?.addEventListener("input", updateEvaluationReview);
+    restoreStudentInfo();
+    ["#studentClass", "#studentGroup", "#studentName"].forEach(selector => {
+      document.querySelector(selector)?.addEventListener("input", persistStudentInfo);
+    });
+    ["#noteDescribe", "#noteAnalyze", "#noteInterpret", "#noteEvaluate"].forEach(selector => {
+      document.querySelector(selector)?.addEventListener("input", updateEvaluationReview);
+    });
+    updateEvaluationReview();
 
     document.querySelector("#resetAll").addEventListener("click", () => {
       collected.clear();
@@ -2917,8 +3850,13 @@
       document.querySelectorAll(".seen,.active,.revealed,.selected,.correct,.matched").forEach(el => {
         el.classList.remove("seen", "active", "revealed", "selected", "correct", "matched");
       });
+      Object.keys(selections).forEach(key => { selections[key] = ""; });
       document.querySelectorAll("textarea").forEach(area => area.value = "");
       document.querySelector("#finalOutput").textContent = "完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。";
+      document.querySelectorAll(".self-stars").forEach(container => renderSelfStars(container, 0));
+      document.querySelectorAll(".ai-feedback-row[data-dimension] .ai-feedback-text").forEach(text => text.textContent = "先给自己点亮星星，再生成自评结论。");
+      document.querySelector("#aiNextStep").textContent = "下一步修改建议会显示在这里。";
+      updateEvaluationReview();
       factCard.innerHTML = "<h4>先点一点银壶</h4><p>从你最感兴趣的部位开始：它的形状像什么？马为什么是金色？链子和提梁有什么用？</p>";
       promptBox.innerHTML = "<b>观察提示：</b>先说事实，再说推测。例如：“我看到马低头衔杯，所以我推测它和宴会祝寿有关。”";
       playOneShot("select");
@@ -3075,6 +4013,171 @@
     window.visualViewport?.addEventListener("resize", renderHotspots);
     animateObservePot();
   </script>
+  <script>
+    (() => {
+      const stage = document.querySelector("#artifactCanvas");
+      const wrap = document.querySelector(".artifact-wrap.model-mode");
+      const image = document.querySelector(".artifact-reference");
+      const status = document.querySelector("#modelLoadingStatus");
+      if (!stage || !wrap || !image) return;
+
+      const hotspotAnchors = {
+        handle: { x: .49, y: .15, depth: -.18 },
+        lid: { x: .78, y: .24, depth: .22 },
+        chain: { x: .80, y: .39, depth: .25 },
+        shape: { x: .24, y: .62, depth: -.2 },
+        horse: { x: .56, y: .62, depth: .08 },
+        craft: { x: .60, y: .88, depth: .04 }
+      };
+      let rotateY = 0;
+      let rotateX = 0;
+      let scale = 1;
+      let autoSpin = false;
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+      let enabled = false;
+      let rafStarted = false;
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function renderHotspots() {
+        if (!enabled) return;
+        const imageRect = image.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        if (!imageRect.width || !imageRect.height) return;
+
+        document.querySelectorAll(".artifact-wrap.model-mode .hotspot").forEach(button => {
+          const anchor = hotspotAnchors[button.dataset.id];
+          if (!anchor) return;
+          const depthShift = rotateY * (anchor.depth || 0);
+          const tiltShift = rotateX * (anchor.y - .5) * .32;
+          button.style.left = `${imageRect.left - wrapRect.left + imageRect.width * anchor.x + depthShift}px`;
+          button.style.top = `${imageRect.top - wrapRect.top + imageRect.height * anchor.y + tiltShift}px`;
+          button.style.opacity = "1";
+          button.style.pointerEvents = "auto";
+        });
+      }
+
+      function render() {
+        wrap.style.setProperty("--pot-rotate-y", `${rotateY}deg`);
+        wrap.style.setProperty("--pot-rotate-x", `${rotateX}deg`);
+        wrap.style.setProperty("--pot-scale", scale.toFixed(3));
+        renderHotspots();
+      }
+
+      function stopAutoSpin() {
+        autoSpin = false;
+        wrap.classList.add("is-fixed-view");
+      }
+
+      function setFallbackView(view) {
+        if (!enabled) return;
+        wrap.classList.add("is-fixed-view");
+        if (view === "front") {
+          rotateY = 0;
+          rotateX = 0;
+          scale = 1;
+          autoSpin = false;
+        } else if (view === "side") {
+          rotateY = 18;
+          rotateX = 0;
+          scale = .98;
+          autoSpin = false;
+        } else if (view === "top") {
+          rotateY = 0;
+          rotateX = 10;
+          scale = .96;
+          autoSpin = false;
+        } else if (view === "spin") {
+          autoSpin = !autoSpin;
+          wrap.classList.toggle("is-fixed-view", !autoSpin);
+        }
+        render();
+      }
+
+      function tick() {
+        if (enabled && autoSpin) {
+          rotateY += .18;
+          if (rotateY > 24) rotateY = -24;
+          render();
+        }
+        requestAnimationFrame(tick);
+      }
+
+      window.enableObserveFallback = (message) => {
+        if (enabled) {
+          if (message && status) status.textContent = message;
+          render();
+          return;
+        }
+        enabled = true;
+        stage.classList.remove("hunyuan-loaded");
+        stage.classList.add(location.protocol === "file:" ? "local-preview-mode" : "model-fallback-mode");
+        wrap.classList.add("is-fixed-view");
+        if (status) status.textContent = message || "本地快速预览：可拖拽旋转观察";
+        render();
+        if (!rafStarted) {
+          rafStarted = true;
+          requestAnimationFrame(tick);
+        }
+      };
+
+      document.querySelectorAll("[data-view]").forEach(button => {
+        button.addEventListener("click", () => setFallbackView(button.dataset.view));
+      });
+
+      stage.addEventListener("pointerdown", event => {
+        if (!enabled || event.target.closest?.(".hotspot, .view-controls, #lensToggle")) return;
+        stopAutoSpin();
+        dragging = true;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        wrap.classList.add("is-interacting");
+        stage.setPointerCapture?.(event.pointerId);
+      });
+
+      stage.addEventListener("pointermove", event => {
+        if (!enabled || !dragging) return;
+        const dx = event.clientX - lastX;
+        const dy = event.clientY - lastY;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        rotateY = clamp(rotateY + dx * .16, -24, 24);
+        rotateX = clamp(rotateX - dy * .08, -10, 12);
+        render();
+      });
+
+      function finishDrag(event) {
+        if (!dragging) return;
+        dragging = false;
+        wrap.classList.remove("is-interacting");
+        if (event?.pointerId !== undefined) stage.releasePointerCapture?.(event.pointerId);
+      }
+
+      stage.addEventListener("pointerup", finishDrag);
+      stage.addEventListener("pointercancel", finishDrag);
+      stage.addEventListener("pointerleave", finishDrag);
+
+      stage.addEventListener("wheel", event => {
+        if (!enabled) return;
+        event.preventDefault();
+        stopAutoSpin();
+        scale = clamp(scale + (event.deltaY > 0 ? -.045 : .045), .88, 1.16);
+        render();
+      }, { passive: false });
+
+      image.addEventListener("load", renderHotspots);
+      window.addEventListener("resize", renderHotspots);
+      window.visualViewport?.addEventListener("resize", renderHotspots);
+
+      if (location.protocol === "file:") {
+        window.enableObserveFallback("本地快速预览：可拖拽旋转观察");
+      }
+    })();
+  </script>
   <script type="module">
     import * as THREE from "./assets/vendor/three.module.min.js";
     import { OrbitControls } from "./assets/vendor/OrbitControls.js";
@@ -3143,6 +4246,8 @@
     };
     const projected3d = new THREE.Vector3();
     let loadedRoot3d = null;
+    let modelStarted3d = false;
+    let animationStarted3d = false;
     let modelBox3d = new THREE.Box3();
     let modelSize3d = new THREE.Vector3(1, 1, 1);
     let modelCenter3d = new THREE.Vector3();
@@ -3191,10 +4296,17 @@
     }
 
     function loadModel3d() {
+      if (location.protocol === "file:") {
+        window.enableObserveFallback?.("本地快速预览：可拖拽旋转观察");
+        return;
+      }
+      if (modelStarted3d) return;
+      modelStarted3d = true;
+      startAnimation3d();
       const loader = new GLTFLoader();
       if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型加载中";
       loader.load(
-        "./assets/wuma-hunyuan-model-web.glb",
+        "./assets/wuma-hunyuan-model-mobile-lite.glb",
         (gltf) => {
           enhanceMaterials3d(gltf.scene);
           fitModel3d(gltf.scene);
@@ -3211,8 +4323,8 @@
         },
         (error) => {
           console.warn("Hunyuan model failed to load.", error);
-          if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型加载失败，请刷新重试";
-          window.showToast?.("混元3D模型加载失败，请检查模型文件。");
+          window.enableObserveFallback?.("3D模型暂未加载，可拖拽预览文物");
+          window.showToast?.("3D模型暂未加载，已切换为快速预览。");
         }
       );
     }
@@ -3249,6 +4361,8 @@
     }
 
     function setView3d(view) {
+      if (stage3d?.classList.contains("local-preview-mode") || stage3d?.classList.contains("model-fallback-mode")) return;
+      loadModel3d();
       if (view === "spin") {
         controls3d.autoRotate = !controls3d.autoRotate;
         window.showToast?.(controls3d.autoRotate ? "自动旋转已开启。" : "自动旋转已暂停。");
@@ -3279,14 +4393,28 @@
     });
 
     renderer3d.domElement.addEventListener("pointerdown", () => {
+      loadModel3d();
       controls3d.autoRotate = false;
     });
     controls3d.addEventListener("change", updateHotspots3d);
     window.addEventListener("resize", resize3d);
     window.visualViewport?.addEventListener("resize", resize3d);
 
-    loadModel3d();
     resize3d();
+
+    if (location.protocol === "file:") {
+      window.enableObserveFallback?.("本地快速预览：可拖拽旋转观察");
+    } else {
+      if (modelLoadingStatus) modelLoadingStatus.textContent = "3D模型准备中，进入本区自动加载";
+
+      const modelLazyObserver = new IntersectionObserver((entries) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          loadModel3d();
+          modelLazyObserver.disconnect();
+        }
+      }, { rootMargin: "260px 0px", threshold: 0.05 });
+      if (stage3d) modelLazyObserver.observe(stage3d);
+    }
 
     function animate3d() {
       controls3d.update();
@@ -3295,7 +4423,11 @@
       requestAnimationFrame(animate3d);
     }
 
-    animate3d();
+    function startAnimation3d() {
+      if (animationStarted3d) return;
+      animationStarted3d = true;
+      animate3d();
+    }
   </script>
 </body>
 </html>
