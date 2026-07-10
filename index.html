@@ -3771,6 +3771,33 @@
       });
     });
 
+    function resetDragChallenge() {
+      const dragSource = document.querySelector("#draggables");
+      if (!dragSource) return;
+      document.querySelectorAll(".drag-card").forEach(card => {
+        dragSource.appendChild(card);
+        card.classList.remove("matched");
+        card.setAttribute("draggable", "true");
+      });
+      document.querySelectorAll(".drop-zone").forEach(zone => {
+        zone.classList.remove("over", "correct");
+      });
+      dragged = null;
+    }
+
+    function resetStoryScene() {
+      document.querySelectorAll("#timeline button").forEach(item => item.classList.remove("active"));
+      document.querySelector("#storyTag").textContent = "何家村窖藏";
+      if (storyVideo) storyVideo.dataset.scene = "intro";
+      if (scenePlayer) {
+        scenePlayer.pause();
+        scenePlayer.loop = false;
+        scenePlayer.removeAttribute("src");
+        scenePlayer.load();
+        scenePlayer.classList.remove("is-playing");
+      }
+    }
+
     document.querySelector("#buildConclusion").addEventListener("click", () => {
       const describe = document.querySelector("#noteDescribe").value.trim() || selections.describe || "我看到它有皮囊式壶身和鎏金舞马纹样";
       const analyze = document.querySelector("#noteAnalyze").value.trim() || selections.analyze || "造型、纹样和金银器工艺结合精巧";
@@ -4116,11 +4143,26 @@
       document.querySelectorAll(".seen,.active,.revealed,.selected,.correct,.matched").forEach(el => {
         el.classList.remove("seen", "active", "revealed", "selected", "correct", "matched");
       });
+      document.querySelectorAll(".evaluated,.is-ready").forEach(el => {
+        el.classList.remove("evaluated", "is-ready");
+      });
+      lensEnabled = false;
+      lens.classList.remove("on", "has-live-sample");
+      document.querySelector("#lensToggle").textContent = "开启放大镜";
+      resetDragChallenge();
+      resetStoryScene();
       Object.keys(selections).forEach(key => { selections[key] = ""; });
       document.querySelectorAll("#studentClass, #studentGroup, #studentName").forEach(input => input.value = "");
       localStorage.removeItem("wumaStudentInfo");
       document.querySelectorAll("textarea").forEach(area => area.value = "");
+      const status = document.querySelector("#submitStatus");
+      if (status) {
+        status.className = "submit-status";
+        status.textContent = "填写完成后可提交到数据回收后台。";
+      }
       document.querySelector("#finalOutput").textContent = "完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。";
+      document.querySelectorAll(".ai-mode-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.evalMode === "self"));
+      document.querySelector("#aiFeedbackHead").textContent = "自评反馈";
       document.querySelectorAll(".self-stars").forEach(container => renderSelfStars(container, 0));
       document.querySelectorAll(".ai-feedback-row[data-dimension] .ai-feedback-text").forEach(text => text.textContent = "先给自己点亮星星，再生成自评结论。");
       document.querySelector("#aiNextStep").textContent = "下一步修改建议会显示在这里。";

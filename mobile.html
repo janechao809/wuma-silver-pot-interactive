@@ -1923,6 +1923,51 @@
       box-shadow: 0 0 0 4px rgba(24,169,129,.12);
     }
 
+    .student-submit-card {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid rgba(7, 59, 50, .14);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .62);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.74);
+    }
+
+    .student-submit-card h4 {
+      margin: 0 0 10px;
+      color: var(--deep);
+      font-size: 18px;
+    }
+
+    .student-submit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .student-submit-grid label {
+      display: grid;
+      gap: 6px;
+      color: rgba(23,39,35,.76);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .submit-status {
+      min-height: 22px;
+      margin: 10px 0 0;
+      color: rgba(23,39,35,.72);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .submit-status.ok {
+      color: #0f7a63;
+    }
+
+    .submit-status.error {
+      color: #b74e2b;
+    }
+
     .final-card {
       margin-top: 16px;
       padding: 20px;
@@ -2272,7 +2317,8 @@
 
       .mission-strip,
       .steps,
-      .worksheet-grid {
+      .worksheet-grid,
+      .student-submit-grid {
         grid-template-columns: 1fr;
       }
 
@@ -2737,6 +2783,25 @@
             <div class="final-output" id="finalOutput">完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。</div>
           </div>
 
+          <div class="student-submit-card">
+            <h4>提交课堂记录</h4>
+            <div class="student-submit-grid">
+              <label>班级
+                <input id="studentClass" autocomplete="off" placeholder="如：六年级1班" />
+              </label>
+              <label>小组
+                <input id="studentGroup" autocomplete="off" placeholder="如：第3组" />
+              </label>
+              <label>姓名
+                <input id="studentName" autocomplete="off" placeholder="请输入姓名" />
+              </label>
+            </div>
+            <div class="tool-row" style="margin-top: 12px;">
+              <button class="primary" id="submitLearningData" type="button">提交学习记录</button>
+            </div>
+            <p class="submit-status" id="submitStatus" aria-live="polite">手机端会把学习单、热点证据和结论提交到回收后台。</p>
+          </div>
+
         </div>
       </section>
     </main>
@@ -2820,6 +2885,7 @@
       interpret: "",
       evaluate: ""
     };
+    const QUICKFORM_ENDPOINT = "https://quickform.cn/api/q6frl7ocje";
 
     const factCard = document.querySelector("#factCard");
     const promptBox = document.querySelector("#promptBox");
@@ -3248,6 +3314,160 @@
       });
     });
 
+    function resetDragChallenge() {
+      const dragSource = document.querySelector("#draggables");
+      if (!dragSource) return;
+      document.querySelectorAll(".drag-card").forEach(card => {
+        dragSource.appendChild(card);
+        card.classList.remove("matched");
+        card.setAttribute("draggable", "true");
+      });
+      document.querySelectorAll(".drop-zone").forEach(zone => {
+        zone.classList.remove("over", "correct");
+      });
+      dragged = null;
+    }
+
+    function resetStoryScene() {
+      document.querySelectorAll("#timeline button").forEach(item => item.classList.remove("active"));
+      document.querySelector("#storyTag").textContent = "何家村窖藏";
+      if (storyVideo) storyVideo.dataset.scene = "intro";
+      if (scenePlayer) {
+        scenePlayer.pause();
+        scenePlayer.classList.remove("is-playing");
+      }
+    }
+
+    function getStudentInfo() {
+      return {
+        className: document.querySelector("#studentClass")?.value.trim() || "",
+        groupName: document.querySelector("#studentGroup")?.value.trim() || "",
+        studentName: document.querySelector("#studentName")?.value.trim() || ""
+      };
+    }
+
+    function persistStudentInfo() {
+      try {
+        localStorage.setItem("wumaStudentInfo", JSON.stringify(getStudentInfo()));
+      } catch (error) {
+        console.warn("Unable to save student info.", error);
+      }
+    }
+
+    function restoreStudentInfo() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("wumaStudentInfo") || "{}");
+        if (saved.className) document.querySelector("#studentClass").value = saved.className;
+        if (saved.groupName) document.querySelector("#studentGroup").value = saved.groupName;
+        if (saved.studentName) document.querySelector("#studentName").value = saved.studentName;
+      } catch (error) {
+        console.warn("Unable to restore student info.", error);
+      }
+    }
+
+    function collectLearningPayload() {
+      const finalText = (document.querySelector("#finalOutput")?.textContent || "").trim();
+      const notes = {
+        describe: document.querySelector("#noteDescribe")?.value.trim() || "",
+        analyze: document.querySelector("#noteAnalyze")?.value.trim() || "",
+        interpret: document.querySelector("#noteInterpret")?.value.trim() || "",
+        evaluate: document.querySelector("#noteEvaluate")?.value.trim() || ""
+      };
+      const matchedCards = Array.from(document.querySelectorAll(".drag-card.matched")).map(card => ({
+        match: card.dataset.match,
+        text: card.textContent.trim()
+      }));
+      const evidenceIds = Array.from(collected);
+      return {
+        submittedAt: new Date().toISOString(),
+        pageTitle: document.title,
+        pageUrl: location.href,
+        userAgent: navigator.userAgent,
+        variant: "mobile-backup",
+        student: getStudentInfo(),
+        progress: {
+          evidenceCount: collected.size,
+          evidenceTotal: 6,
+          matchedCount: matchedCards.length,
+          conclusionState: finalText.includes("完成观察") ? "待完善" : "已生成"
+        },
+        evidence: evidenceIds.map(id => ({
+          id,
+          title: facts[id]?.title || "",
+          text: facts[id]?.text || ""
+        })),
+        selections: { ...selections },
+        matchedCards,
+        notes,
+        finalConclusion: finalText.includes("完成观察") ? "" : finalText
+      };
+    }
+
+    function makeQuickFormBody(payload) {
+      const body = new URLSearchParams();
+      body.set("班级", payload.student.className);
+      body.set("小组", payload.student.groupName);
+      body.set("姓名", payload.student.studentName);
+      body.set("手机端", "是");
+      body.set("已点亮证据数", String(payload.progress.evidenceCount));
+      body.set("拖拽匹配数", String(payload.progress.matchedCount));
+      body.set("鉴赏结论完成状态", payload.progress.conclusionState);
+      body.set("学生鉴赏结论", payload.finalConclusion || Object.values(payload.notes).filter(Boolean).join(" / "));
+      body.set("提交时间", payload.submittedAt);
+      body.set("payload", JSON.stringify(payload));
+      return body;
+    }
+
+    async function submitLearningData() {
+      const student = getStudentInfo();
+      const status = document.querySelector("#submitStatus");
+      const button = document.querySelector("#submitLearningData");
+      status.className = "submit-status";
+      if (!student.className || !student.groupName || !student.studentName) {
+        status.textContent = "请先填写班级、小组和姓名。";
+        status.classList.add("error");
+        showToast("请先填写班级、小组和姓名。");
+        return;
+      }
+      const payload = collectLearningPayload();
+      const body = makeQuickFormBody(payload);
+      button.disabled = true;
+      status.textContent = "正在提交学习数据……";
+      try {
+        const response = await fetch(QUICKFORM_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: body.toString(),
+          keepalive: true
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        status.textContent = "学习数据已提交。";
+        status.classList.add("ok");
+        playOneShot("correct");
+        showToast("学习数据已提交。");
+      } catch (error) {
+        console.warn("QuickForm submit failed, trying beacon fallback.", error);
+        const sent = navigator.sendBeacon?.(
+          QUICKFORM_ENDPOINT,
+          new Blob([body.toString()], { type: "application/x-www-form-urlencoded;charset=UTF-8" })
+        );
+        if (sent) {
+          status.textContent = "已发送提交请求，后台接收中。";
+          status.classList.add("ok");
+          showToast("已发送提交请求。");
+        } else {
+          status.textContent = "提交失败，请检查网络后再试。";
+          status.classList.add("error");
+          playOneShot("wrong");
+          showToast("提交失败，请检查网络后再试。");
+        }
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     document.querySelector("#buildConclusion").addEventListener("click", () => {
       const describe = document.querySelector("#noteDescribe").value.trim() || selections.describe || "我看到它有皮囊式壶身和鎏金舞马纹样";
       const analyze = document.querySelector("#noteAnalyze").value.trim() || selections.analyze || "造型、纹样和金银器工艺结合精巧";
@@ -3259,13 +3479,32 @@
       burstConfetti();
     });
 
+    document.querySelector("#submitLearningData")?.addEventListener("click", submitLearningData);
+    restoreStudentInfo();
+    ["#studentClass", "#studentGroup", "#studentName"].forEach(selector => {
+      document.querySelector(selector)?.addEventListener("input", persistStudentInfo);
+    });
+
     document.querySelector("#resetAll").addEventListener("click", () => {
       collected.clear();
       updateProgress();
       document.querySelectorAll(".seen,.active,.revealed,.selected,.correct,.matched").forEach(el => {
         el.classList.remove("seen", "active", "revealed", "selected", "correct", "matched");
       });
+      lensEnabled = false;
+      lens.classList.remove("on", "has-live-sample");
+      document.querySelector("#lensToggle").textContent = "开启放大镜";
+      resetDragChallenge();
+      resetStoryScene();
+      Object.keys(selections).forEach(key => { selections[key] = ""; });
+      document.querySelectorAll("#studentClass, #studentGroup, #studentName").forEach(input => input.value = "");
+      localStorage.removeItem("wumaStudentInfo");
       document.querySelectorAll("textarea").forEach(area => area.value = "");
+      const status = document.querySelector("#submitStatus");
+      if (status) {
+        status.className = "submit-status";
+        status.textContent = "手机端会把学习单、热点证据和结论提交到回收后台。";
+      }
       document.querySelector("#finalOutput").textContent = "完成观察、选择或填写后，这里会生成一段可展示的欣赏表达。";
       factCard.innerHTML = "<h4>先点一点银壶</h4><p>从你最感兴趣的部位开始：它的形状像什么？马为什么是金色？链子和提梁有什么用？</p>";
       promptBox.innerHTML = "<b>观察提示：</b>先说事实，再说推测。例如：“我看到马低头衔杯，所以我推测它和宴会祝寿有关。”";
