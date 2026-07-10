@@ -510,6 +510,8 @@
       width: min(92%, 660px);
       aspect-ratio: 1 / 1;
       animation: none;
+      z-index: 10;
+      isolation: isolate;
       --pot-rotate-y: 0deg;
       --pot-rotate-x: 0deg;
       --pot-scale: 1;
@@ -518,7 +520,7 @@
     #artifact3d {
       position: absolute;
       inset: 0;
-      z-index: 2;
+      z-index: 1;
       width: 100%;
       height: 100%;
       display: block;
@@ -669,7 +671,7 @@
 
     .hotspot {
       position: absolute;
-      z-index: 25;
+      z-index: 100;
       width: 30px;
       height: 30px;
       border: 0;
@@ -2273,6 +2275,134 @@
         width: 30px;
         height: 30px;
       }
+
+      html,
+      body {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .app,
+      main,
+      .section,
+      .hero,
+      .lab,
+      .story-board,
+      .match-grid,
+      .challenge,
+      .worksheet,
+      .final-card {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .topbar {
+        width: 100%;
+        padding: 12px 14px;
+      }
+
+      .brand {
+        width: 100%;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+      }
+
+      .nav {
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+
+      .nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav a {
+        flex: 0 0 auto;
+      }
+
+      .hero,
+      .section {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .hero h2 {
+        font-size: clamp(32px, 11vw, 52px);
+      }
+
+      .hero-panel {
+        min-height: 360px;
+      }
+
+      .hero-panel-title,
+      .hero-panel-title span {
+        white-space: normal;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .section-desc {
+        max-width: none;
+      }
+
+      .mission-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .artifact-stage {
+        padding: 12px;
+      }
+
+      .artifact-canvas {
+        min-height: clamp(360px, 108vw, 500px);
+      }
+
+      .artifact-wrap.model-mode {
+        width: 100%;
+        max-width: 420px;
+        min-width: 0;
+      }
+
+      .view-controls {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+
+      .view-controls button {
+        flex: 0 0 auto;
+      }
+
+      .model-loading-status {
+        left: 12px;
+        top: 62px;
+        max-width: calc(100% - 24px);
+      }
+
+      .model-hint {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-width: calc(100% - 24px);
+      }
+
+      .hotspot {
+        width: 26px;
+        height: 26px;
+      }
     }
   </style>
 </head>
@@ -2341,7 +2471,7 @@
             <div class="artifact-canvas is-3d" id="artifactCanvas">
               <div class="artifact-wrap model-mode">
                 <canvas id="artifact3d" aria-label="可旋转观察的唐鎏金舞马衔杯纹皮囊式银壶3D教学模型"></canvas>
-                <img class="artifact-reference" src="./assets/wuma-silver-pot.png" alt="唐鎏金舞马衔杯纹皮囊式银壶参考图">
+                <img class="artifact-reference" src="./assets/wuma-silver-pot.png" alt="唐鎏金舞马衔杯纹皮囊式银壶参考图" loading="lazy" decoding="async">
                 <div class="artifact-glint" aria-hidden="true"></div>
                 <button class="hotspot hs-handle" data-id="handle" data-label="提梁银链" aria-label="查看提梁银链"></button>
                 <button class="hotspot hs-lid" data-id="lid" data-label="壶盖莲瓣" aria-label="查看壶盖莲瓣"></button>
@@ -2465,9 +2595,9 @@
               <div class="video-light left"></div>
               <div class="video-light right"></div>
               <div class="video-stage"></div>
-              <img class="archive-map" src="./assets/hejiacun-archaeology-map.png" alt="何家村唐代窖藏位置示意图">
+              <img class="archive-map" src="./assets/hejiacun-archaeology-map.png" alt="何家村唐代窖藏位置示意图" loading="lazy" decoding="async">
               <div class="shape-reference" aria-hidden="true">
-                <img class="pouch-photo" src="./assets/northern-leather-pouch.jpg" alt="">
+                <img class="pouch-photo" src="./assets/northern-leather-pouch.jpg" alt="" loading="lazy" decoding="async">
                 <b>北方皮囊壶器型</b>
                 <span>对照扁圆壶身与顶部结构</span>
               </div>
@@ -2478,7 +2608,7 @@
               <div class="palace-note note-three">寿</div>
               <div class="cup-path"></div>
               <div class="palace-cup"></div>
-              <img class="craft-demo" src="./assets/craft-process.gif" alt="传统金银工艺动图">
+              <img class="craft-demo" src="./assets/craft-process.gif" alt="传统金银工艺动图" loading="lazy" decoding="async">
               <div class="craft-artisan"></div>
               <div class="craft-table"></div>
               <div class="craft-anvil"></div>
@@ -2491,9 +2621,9 @@
               <span class="craft-spark spark-one"></span>
               <span class="craft-spark spark-two"></span>
               <span class="craft-spark spark-three"></span>
-              <img class="video-artifact" src="./assets/wuma-silver-pot.png" alt="情境动画中的银壶">
-              <img class="video-horse" src="./assets/horse-clear-source.png" alt="情境动画中的舞马纹样">
-              <img class="craft-sheet" src="./assets/wuma-silver-pot.png" alt="工艺动画中的银壶">
+              <img class="video-artifact" src="./assets/wuma-silver-pot.png" alt="情境动画中的银壶" loading="lazy" decoding="async">
+              <img class="video-horse" src="./assets/horse-clear-source.png" alt="情境动画中的舞马纹样" loading="lazy" decoding="async">
+              <img class="craft-sheet" src="./assets/wuma-silver-pot.png" alt="工艺动画中的银壶" loading="lazy" decoding="async">
               <div class="gilt-flash"></div>
               <div class="process-track" aria-hidden="true">
                 <div class="process-step">捶揲</div>
@@ -2503,7 +2633,7 @@
               </div>
             </div>
             <div class="orbit-text"><span id="storyTag">何家村窖藏</span></div>
-            <img class="story-artifact" src="./assets/wuma-silver-pot.png" alt="银壶故事场景中的文物图">
+            <img class="story-artifact" src="./assets/wuma-silver-pot.png" alt="银壶故事场景中的文物图" loading="lazy" decoding="async">
           </div>
           <div class="timeline" id="timeline">
             <button data-tag="何家村窖藏">
