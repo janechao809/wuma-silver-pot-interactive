@@ -2444,6 +2444,14 @@
       50% { transform: translateY(-12px) rotateX(3deg); }
     }
 
+    @keyframes mobileRevealReady {
+      to {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+    }
+
     @keyframes glint {
       0%, 20% { transform: translateX(-86%); opacity: 0; }
       45% { opacity: .55; }
@@ -2776,8 +2784,22 @@
         padding-right: 14px;
       }
 
+      .hero-copy {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .hero-copy.motion-reveal,
+      .hero-panel.motion-reveal,
+      .mission-card.motion-reveal {
+        animation: mobileRevealReady .72s cubic-bezier(.16, 1, .3, 1) var(--reveal-delay, 0ms) both;
+      }
+
       .hero h2 {
-        font-size: clamp(32px, 11vw, 52px);
+        font-size: clamp(28px, 8.8vw, 38px);
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .hero-panel {
@@ -2787,6 +2809,15 @@
       .hero-panel-title,
       .hero-panel-title span {
         white-space: normal;
+      }
+
+      .hero-title-line,
+      .hero-title-gold {
+        display: block;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .section-head {
@@ -3268,15 +3299,39 @@
         el.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 55}ms`);
       });
 
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("in-view");
-          revealObserver.unobserve(entry.target);
-        });
-      }, { threshold: .14, rootMargin: "0px 0px -8% 0px" });
+      let revealObserver;
 
-      revealTargets.forEach(el => revealObserver.observe(el));
+      function revealVisibleTargets() {
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        revealTargets.forEach(el => {
+          if (el.classList.contains("in-view")) return;
+          const rect = el.getBoundingClientRect();
+          if (rect.top < viewportHeight * .94 && rect.bottom > 0) {
+            el.classList.add("in-view");
+            revealObserver?.unobserve(el);
+          }
+        });
+      }
+
+      if ("IntersectionObserver" in window) {
+        revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("in-view");
+            revealObserver.unobserve(entry.target);
+          });
+        }, { threshold: .14, rootMargin: "0px 0px -8% 0px" });
+
+        revealTargets.forEach(el => revealObserver.observe(el));
+      } else {
+        revealVisibleTargets();
+      }
+
+      revealVisibleTargets();
+      requestAnimationFrame(revealVisibleTargets);
+      window.addEventListener("load", revealVisibleTargets, { once: true });
+      window.addEventListener("scroll", revealVisibleTargets, { passive: true });
+      window.addEventListener("hashchange", () => requestAnimationFrame(revealVisibleTargets));
 
       document.querySelectorAll("button:not(.hotspot), .nav a").forEach(target => {
         target.addEventListener("pointerdown", event => {
@@ -4400,55 +4455,70 @@
     const stage3d = document.querySelector("#artifactCanvas");
     const wrap3d = document.querySelector(".artifact-wrap.model-mode");
     const modelLoadingStatus = document.querySelector("#modelLoadingStatus");
-    const renderer3d = new THREE.WebGLRenderer({
-      canvas: canvas3d,
-      antialias: true,
-      alpha: true,
-      preserveDrawingBuffer: true,
-      powerPreference: "high-performance"
-    });
-    renderer3d.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer3d.outputColorSpace = THREE.SRGBColorSpace;
-    renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer3d.toneMappingExposure = 1.12;
+    let renderer3d = null;
+    let scene3d = null;
+    let camera3d = null;
+    let controls3d = null;
+    let model3d = null;
 
-    const scene3d = new THREE.Scene();
-    const camera3d = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera3d.position.set(0, 0.18, 6.2);
+    function ensureRenderer3d() {
+      if (renderer3d) return true;
+      if (!canvas3d || !wrap3d) return false;
 
-    const controls3d = new OrbitControls(camera3d, renderer3d.domElement);
-    controls3d.enableDamping = true;
-    controls3d.dampingFactor = 0.08;
-    controls3d.enablePan = false;
-    controls3d.enableZoom = true;
-    controls3d.rotateSpeed = 0.86;
-    controls3d.zoomSpeed = 0.72;
-    controls3d.minDistance = 3.45;
-    controls3d.maxDistance = 8.5;
-    controls3d.autoRotate = false;
-    controls3d.autoRotateSpeed = 1.05;
+      renderer3d = new THREE.WebGLRenderer({
+        canvas: canvas3d,
+        antialias: true,
+        alpha: true,
+        preserveDrawingBuffer: true,
+        powerPreference: "high-performance"
+      });
+      renderer3d.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer3d.outputColorSpace = THREE.SRGBColorSpace;
+      renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer3d.toneMappingExposure = 1.12;
 
-    const model3d = new THREE.Group();
-    scene3d.add(model3d);
+      scene3d = new THREE.Scene();
+      camera3d = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+      camera3d.position.set(0, 0.18, 6.2);
 
-    scene3d.add(new THREE.HemisphereLight(0xfff6de, 0x24443c, 2.45));
-    const keyLight3d = new THREE.DirectionalLight(0xfff0c8, 3.7);
-    keyLight3d.position.set(3.8, 4.8, 5.4);
-    scene3d.add(keyLight3d);
-    const fillLight3d = new THREE.DirectionalLight(0xb5fff0, 1.25);
-    fillLight3d.position.set(-4.5, 2.4, 2.2);
-    scene3d.add(fillLight3d);
-    const rimLight3d = new THREE.DirectionalLight(0xffffff, 1.2);
-    rimLight3d.position.set(-2.2, 3.2, -4.8);
-    scene3d.add(rimLight3d);
+      controls3d = new OrbitControls(camera3d, renderer3d.domElement);
+      controls3d.enableDamping = true;
+      controls3d.dampingFactor = 0.08;
+      controls3d.enablePan = false;
+      controls3d.enableZoom = true;
+      controls3d.rotateSpeed = 0.86;
+      controls3d.zoomSpeed = 0.72;
+      controls3d.minDistance = 3.45;
+      controls3d.maxDistance = 8.5;
+      controls3d.autoRotate = false;
+      controls3d.autoRotateSpeed = 1.05;
+      controls3d.addEventListener("change", updateHotspots3d);
 
-    const floor3d = new THREE.Mesh(
-      new THREE.CircleGeometry(1.82, 96),
-      new THREE.MeshBasicMaterial({ color: 0x073b32, transparent: true, opacity: .1 })
-    );
-    floor3d.rotation.x = -Math.PI / 2;
-    floor3d.position.y = -1.62;
-    scene3d.add(floor3d);
+      model3d = new THREE.Group();
+      scene3d.add(model3d);
+
+      scene3d.add(new THREE.HemisphereLight(0xfff6de, 0x24443c, 2.45));
+      const keyLight3d = new THREE.DirectionalLight(0xfff0c8, 3.7);
+      keyLight3d.position.set(3.8, 4.8, 5.4);
+      scene3d.add(keyLight3d);
+      const fillLight3d = new THREE.DirectionalLight(0xb5fff0, 1.25);
+      fillLight3d.position.set(-4.5, 2.4, 2.2);
+      scene3d.add(fillLight3d);
+      const rimLight3d = new THREE.DirectionalLight(0xffffff, 1.2);
+      rimLight3d.position.set(-2.2, 3.2, -4.8);
+      scene3d.add(rimLight3d);
+
+      const floor3d = new THREE.Mesh(
+        new THREE.CircleGeometry(1.82, 96),
+        new THREE.MeshBasicMaterial({ color: 0x073b32, transparent: true, opacity: .1 })
+      );
+      floor3d.rotation.x = -Math.PI / 2;
+      floor3d.position.y = -1.62;
+      scene3d.add(floor3d);
+
+      resize3d();
+      return true;
+    }
 
     const hotspotWorldAnchors = {
       handle: new THREE.Vector3(0, 1.02, .42),
@@ -4514,6 +4584,7 @@
         window.enableObserveFallback?.("本地快速预览：可拖拽旋转观察");
         return;
       }
+      if (!ensureRenderer3d()) return;
       if (modelStarted3d) return;
       modelStarted3d = true;
       startAnimation3d();
@@ -4552,7 +4623,7 @@
     }
 
     function updateHotspots3d() {
-      if (!loadedRoot3d || !wrap3d) return;
+      if (!loadedRoot3d || !wrap3d || !camera3d) return;
       const wrapRect = wrap3d.getBoundingClientRect();
       document.querySelectorAll(".hotspot").forEach((button) => {
         const anchor = hotspotWorldAnchors[button.dataset.id];
@@ -4565,6 +4636,7 @@
     }
 
     function resize3d() {
+      if (!renderer3d || !camera3d || !wrap3d) return;
       const rect = wrap3d.getBoundingClientRect();
       const width = Math.max(320, rect.width);
       const height = Math.max(320, rect.height);
@@ -4576,6 +4648,7 @@
 
     function setView3d(view) {
       if (stage3d?.classList.contains("local-preview-mode") || stage3d?.classList.contains("model-fallback-mode")) return;
+      if (!ensureRenderer3d()) return;
       loadModel3d();
       if (view === "spin") {
         controls3d.autoRotate = !controls3d.autoRotate;
@@ -4606,15 +4679,13 @@
       button.addEventListener("click", event => event.stopPropagation());
     });
 
-    renderer3d.domElement.addEventListener("pointerdown", () => {
+    canvas3d?.addEventListener("pointerdown", () => {
+      if (!ensureRenderer3d()) return;
       loadModel3d();
       controls3d.autoRotate = false;
     });
-    controls3d.addEventListener("change", updateHotspots3d);
     window.addEventListener("resize", resize3d);
     window.visualViewport?.addEventListener("resize", resize3d);
-
-    resize3d();
 
     if (location.protocol === "file:") {
       window.enableObserveFallback?.("本地快速预览：可拖拽旋转观察");
@@ -4631,6 +4702,7 @@
     }
 
     function animate3d() {
+      if (!renderer3d || !scene3d || !camera3d || !controls3d) return;
       controls3d.update();
       renderer3d.render(scene3d, camera3d);
       updateHotspots3d();
@@ -4638,6 +4710,7 @@
     }
 
     function startAnimation3d() {
+      if (!ensureRenderer3d()) return;
       if (animationStarted3d) return;
       animationStarted3d = true;
       animate3d();
