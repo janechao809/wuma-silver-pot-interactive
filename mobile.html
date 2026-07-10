@@ -754,6 +754,24 @@
       transition: opacity .16s ease, transform .16s ease;
     }
 
+    .lens-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .16s ease;
+    }
+
+    .lens.has-live-sample .lens-canvas {
+      opacity: 1;
+    }
+
+    .artifact-canvas.hunyuan-loaded .lens {
+      background-image: none;
+    }
+
     .lens.on {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
@@ -2488,7 +2506,7 @@
                 <button type="button" data-view="spin">自动旋转</button>
               </div>
               <div class="model-hint">拖拽旋转 · 滚轮缩放 · 点热点收集证据</div>
-              <div class="lens" id="lens" aria-hidden="true"></div>
+              <div class="lens" id="lens" aria-hidden="true"><canvas class="lens-canvas" id="lensCanvas"></canvas></div>
             </div>
           </div>
 
@@ -2809,6 +2827,9 @@
     const progressBar = document.querySelector("#progressBar");
     const toast = document.querySelector("#toast");
     const lens = document.querySelector("#lens");
+    const lensCanvas = document.querySelector("#lensCanvas");
+    const lensContext = lensCanvas?.getContext("2d");
+    const modelCanvas = document.querySelector("#artifact3d");
     const canvas = document.querySelector("#artifactCanvas");
     const storyVideo = document.querySelector("#storyVideo");
     const scenePlayer = document.querySelector("#scenePlayer");
@@ -3086,6 +3107,52 @@
       if (!lensEnabled) lens.classList.remove("on");
     });
 
+    const lensZoom = 2.2;
+
+    function resizeLensCanvas() {
+      if (!lensCanvas || !lens) return;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(lens.clientWidth * pixelRatio));
+      const height = Math.max(1, Math.round(lens.clientHeight * pixelRatio));
+      if (lensCanvas.width !== width) lensCanvas.width = width;
+      if (lensCanvas.height !== height) lensCanvas.height = height;
+    }
+
+    function sampleLiveModel(event) {
+      if (!lensContext || !modelCanvas || !modelCanvas.width || !modelCanvas.height || !canvas.classList.contains("hunyuan-loaded")) return false;
+      const modelRect = modelCanvas.getBoundingClientRect();
+      const localX = event.clientX - modelRect.left;
+      const localY = event.clientY - modelRect.top;
+      if (localX < 0 || localY < 0 || localX > modelRect.width || localY > modelRect.height) return false;
+      resizeLensCanvas();
+      const scaleX = modelCanvas.width / modelRect.width;
+      const scaleY = modelCanvas.height / modelRect.height;
+      const sourceWidth = Math.max(1, Math.min(modelCanvas.width, Math.round((lens.clientWidth / lensZoom) * scaleX)));
+      const sourceHeight = Math.max(1, Math.min(modelCanvas.height, Math.round((lens.clientHeight / lensZoom) * scaleY)));
+      const centerX = localX * scaleX;
+      const centerY = localY * scaleY;
+      const sourceX = Math.max(0, Math.min(modelCanvas.width - sourceWidth, Math.round(centerX - sourceWidth / 2)));
+      const sourceY = Math.max(0, Math.min(modelCanvas.height - sourceHeight, Math.round(centerY - sourceHeight / 2)));
+      lensContext.clearRect(0, 0, lensCanvas.width, lensCanvas.height);
+      lensContext.imageSmoothingEnabled = true;
+      lensContext.drawImage(modelCanvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, lensCanvas.width, lensCanvas.height);
+      lens.classList.add("has-live-sample");
+      return true;
+    }
+
+    function positionReferenceLens(event) {
+      const image = document.querySelector(".artifact-reference");
+      const imageRect = image?.getBoundingClientRect();
+      if (!imageRect?.width || !imageRect.height) return;
+      const imageX = Math.max(0, Math.min(1, (event.clientX - imageRect.left) / imageRect.width));
+      const imageY = Math.max(0, Math.min(1, (event.clientY - imageRect.top) / imageRect.height));
+      const backgroundWidth = imageRect.width * lensZoom;
+      const backgroundHeight = imageRect.height * lensZoom;
+      lens.style.backgroundSize = `${backgroundWidth}px ${backgroundHeight}px`;
+      lens.style.backgroundPosition = `${lens.clientWidth / 2 - imageX * backgroundWidth}px ${lens.clientHeight / 2 - imageY * backgroundHeight}px`;
+      lens.classList.remove("has-live-sample");
+    }
+
     canvas.addEventListener("pointermove", event => {
       if (!lensEnabled) return;
       const rect = canvas.getBoundingClientRect();
@@ -3093,13 +3160,13 @@
       const y = event.clientY - rect.top;
       lens.style.left = `${x}px`;
       lens.style.top = `${y}px`;
-      const px = Math.max(0, Math.min(1, x / rect.width));
-      const py = Math.max(0, Math.min(1, y / rect.height));
-      lens.style.backgroundPosition = `${px * 100}% ${py * 100}%`;
+      if (!sampleLiveModel(event)) positionReferenceLens(event);
       lens.classList.add("on");
     });
 
-    canvas.addEventListener("pointerleave", () => lens.classList.remove("on"));
+    canvas.addEventListener("pointerleave", () => lens.classList.remove("on", "has-live-sample"));
+    window.addEventListener("resize", resizeLensCanvas);
+    resizeLensCanvas();
 
     document.querySelectorAll(".choice-list").forEach(group => {
       group.addEventListener("click", event => {
@@ -3369,6 +3436,7 @@
       canvas: canvas3d,
       antialias: true,
       alpha: true,
+      preserveDrawingBuffer: true,
       powerPreference: "high-performance"
     });
     renderer3d.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
